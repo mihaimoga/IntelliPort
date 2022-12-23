@@ -1,0 +1,51 @@
+/* This file is part of IntelliPort application developed by Mihai MOGA.
+
+IntelliPort is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Open
+Source Initiative, either version 3 of the License, or any later version.
+
+IntelliPort is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
+
+// IntelliPort.h : main header file for the IntelliPort application
+//
+#pragma once
+
+#ifndef __AFXWIN_H__
+	#error "include 'stdafx.h' before including this file for PCH"
+#endif
+
+#include "resource.h"       // main symbols
+#include "sinstance.h"
+
+// CIntelliPortApp:
+// See IntelliPort.cpp for the implementation of this class
+//
+
+class CIntelliPortApp : public CWinAppEx
+{
+public:
+	CIntelliPortApp();
+
+// Overrides
+public:
+	virtual BOOL InitInstance();
+	virtual int ExitInstance();
+
+// Implementation
+	UINT  m_nAppLook;
+	virtual void PreLoadState();
+	virtual void LoadCustomState();
+	virtual void SaveCustomState();
+
+protected:
+	CInstanceChecker m_InstanceChecker;
+	afx_msg void OnAppAbout();
+	DECLARE_MESSAGE_MAP()
+};
+
+extern CIntelliPortApp theApp;
