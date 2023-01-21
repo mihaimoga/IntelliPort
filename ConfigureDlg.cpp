@@ -70,7 +70,7 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pConnection.AddString(_T("Serial Port"));
 	m_pConnection.AddString(_T("TCP Socket"));
 	m_pConnection.AddString(_T("UDP Socket"));
-	m_pConnection.SetCurSel(theApp.GetInt(_T("Connection"), 0));
+	m_pConnection.SetCurSel(0);
 
 	if (CEnumerateSerial::UsingGetCommPorts(m_arrSerialPortNames))
 	{
@@ -80,7 +80,7 @@ BOOL CConfigureDlg::OnInitDialog()
 			strSerialPortName.Format(_T("COM%u"), m_arrSerialPortNames[nIndex]);
 			m_pSerialPortNames.AddString(strSerialPortName);
 		}
-		m_pSerialPortNames.SetCurSel(theApp.GetInt(_T("SerialPort"), 0));
+		m_pSerialPortNames.SetCurSel(0);
 	}
 
 	m_pBaudRate.ResetContent();
@@ -98,98 +98,12 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pBaudRate.AddString(_T("115200"));
 	m_pBaudRate.AddString(_T("128000"));
 	m_pBaudRate.AddString(_T("256000"));
-	switch (theApp.GetInt(_T("BaudRate"), CBR_115200))
-	{
-		case CBR_110:
-		{
-			m_pBaudRate.SetCurSel(0);
-			break;
-		}
-		case CBR_300:
-		{
-			m_pBaudRate.SetCurSel(1);
-			break;
-		}
-		case CBR_600:
-		{
-			m_pBaudRate.SetCurSel(2);
-			break;
-		}
-		case CBR_1200:
-		{
-			m_pBaudRate.SetCurSel(3);
-			break;
-		}
-		case CBR_2400:
-		{
-			m_pBaudRate.SetCurSel(4);
-			break;
-		}
-		case CBR_4800:
-		{
-			m_pBaudRate.SetCurSel(5);
-			break;
-		}
-		case CBR_9600:
-		{
-			m_pBaudRate.SetCurSel(6);
-			break;
-		}
-		case CBR_14400:
-		{
-			m_pBaudRate.SetCurSel(7);
-			break;
-		}
-		case CBR_19200:
-		{
-			m_pBaudRate.SetCurSel(8);
-			break;
-		}
-		case CBR_38400:
-		{
-			m_pBaudRate.SetCurSel(9);
-			break;
-		}
-		case CBR_57600:
-		{
-			m_pBaudRate.SetCurSel(10);
-			break;
-		}
-		case CBR_115200:
-		default:
-		{
-			m_pBaudRate.SetCurSel(11);
-			break;
-		}
-		case CBR_128000:
-		{
-			m_pBaudRate.SetCurSel(12);
-			break;
-		}
-		case CBR_256000:
-		{
-			m_pBaudRate.SetCurSel(13);
-			break;
-		}
-	}
+	m_pBaudRate.SetCurSel(11);
 
 	m_pDataBits.ResetContent();
 	m_pDataBits.AddString(_T("7"));
 	m_pDataBits.AddString(_T("8"));
-	switch (theApp.GetInt(_T("DataBits"), 8))
-	{
-		case 7:
-		{
-			m_pDataBits.SetCurSel(0);
-			break;
-		}
-		case 8:
-		default:
-		{
-			m_pDataBits.SetCurSel(1);
-			break;
-		}
-	}
+	m_pDataBits.SetCurSel(1);
 
 	m_pParity.ResetContent();
 	m_pParity.AddString(_T("None"));
@@ -197,59 +111,13 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pParity.AddString(_T("Even"));
 	m_pParity.AddString(_T("Mark"));
 	m_pParity.AddString(_T("Space"));
-	switch ((CSerialPort::Parity)theApp.GetInt(_T("Parity"), (int)CSerialPort::Parity::NoParity))
-	{
-		case CSerialPort::Parity::NoParity:
-		default:
-		{
-			m_pParity.SetCurSel(0);
-			break;
-		}
-		case CSerialPort::Parity::OddParity:
-		{
-			m_pParity.SetCurSel(1);
-			break;
-		}
-		case CSerialPort::Parity::EvenParity:
-		{
-			m_pParity.SetCurSel(2);
-			break;
-		}
-		case CSerialPort::Parity::MarkParity:
-		{
-			m_pParity.SetCurSel(3);
-			break;
-		}
-		case CSerialPort::Parity::SpaceParity:
-		{
-			m_pParity.SetCurSel(4);
-			break;
-		}
-	}
+	m_pParity.SetCurSel(0);
 
 	m_pStopBits.ResetContent();
 	m_pStopBits.AddString(_T("1"));
 	m_pStopBits.AddString(_T("1.5"));
 	m_pStopBits.AddString(_T("2"));
-	switch ((CSerialPort::StopBits)theApp.GetInt(_T("StopBits"), (int)CSerialPort::StopBits::OneStopBit))
-	{
-		case CSerialPort::StopBits::OneStopBit:
-		default:
-		{
-			m_pStopBits.SetCurSel(0);
-			break;
-		}
-		case CSerialPort::StopBits::OnePointFiveStopBits:
-		{
-			m_pStopBits.SetCurSel(1);
-			break;
-		}
-		case CSerialPort::StopBits::TwoStopBits:
-		{
-			m_pStopBits.SetCurSel(2);
-			break;
-		}
-	}
+	m_pStopBits.SetCurSel(0);
 
 	m_pFlowControl.ResetContent();
 	m_pFlowControl.AddString(_T("None"));
@@ -258,48 +126,14 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pFlowControl.AddString(_T("DSR/RTS"));
 	m_pFlowControl.AddString(_T("DSR/DTR"));
 	m_pFlowControl.AddString(_T("Xon/Xoff"));
-	switch ((CSerialPort::FlowControl)theApp.GetInt(_T("FlowControl"), (int)CSerialPort::FlowControl::NoFlowControl))
-	{
-		case CSerialPort::FlowControl::NoFlowControl:
-		default:
-		{
-			m_pFlowControl.SetCurSel(0);
-			break;
-		}
-		case CSerialPort::FlowControl::CtsRtsFlowControl:
-		{
-			m_pFlowControl.SetCurSel(1);
-			break;
-		}
-		case CSerialPort::FlowControl::CtsDtrFlowControl:
-		{
-			m_pFlowControl.SetCurSel(2);
-			break;
-		}
-		case CSerialPort::FlowControl::DsrRtsFlowControl:
-		{
-			m_pFlowControl.SetCurSel(3);
-			break;
-		}
-		case CSerialPort::FlowControl::DsrDtrFlowControl:
-		{
-			m_pFlowControl.SetCurSel(4);
-			break;
-		}
-		case CSerialPort::FlowControl::XonXoffFlowControl:
-		{
-			m_pFlowControl.SetCurSel(5);
-			break;
-		}
-	}
+	m_pFlowControl.SetCurSel(0);
 
 	m_pSocketType.ResetContent();
 	m_pSocketType.AddString(_T("Server"));
 	m_pSocketType.AddString(_T("Client"));
-	m_pSocketType.SetCurSel(theApp.GetInt(_T("SocketType"), 0));
+	m_pSocketType.SetCurSel(0);
 
-	CString strServerIP = theApp.GetString(_T("ServerIP"), _T("127.0.0.1"));
-	if (strServerIP.IsEmpty()) strServerIP = _T("127.0.0.1");
+	CString strServerIP = _T("127.0.0.1");
 	const int nServer1 = strServerIP.Find(_T('.'), 0);
 	const int nServer2 = strServerIP.Find(_T('.'), nServer1 + 1);
 	const int nServer3 = strServerIP.Find(_T('.'), nServer2 + 1);
@@ -308,13 +142,11 @@ BOOL CConfigureDlg::OnInitDialog()
 		(BYTE) _tstoi(strServerIP.Mid(nServer2 + 1, nServer3 - nServer2)),
 		(BYTE) _tstoi(strServerIP.Mid(nServer3 + 1, strServerIP.GetLength() - nServer3)));
 
-	CString strServerPort;
-	strServerPort.Format(_T("%d"), theApp.GetInt(_T("ServerPort"), 0));
+	CString strServerPort = _T("8080");
 	m_pServerPort.SetWindowText(strServerPort);
 	m_pServerPort.SetLimitText(5);
 
-	CString strClientIP = theApp.GetString(_T("ClientIP"), _T("127.0.0.1"));
-	if (strClientIP.IsEmpty()) strClientIP = _T("127.0.0.1");
+	CString strClientIP = _T("127.0.0.1");
 	const int nClient1 = strClientIP.Find(_T('.'), 0);
 	const int nClient2 = strClientIP.Find(_T('.'), nClient1 + 1);
 	const int nClient3 = strClientIP.Find(_T('.'), nClient2 + 1);
@@ -323,8 +155,7 @@ BOOL CConfigureDlg::OnInitDialog()
 		(BYTE) _tstoi(strClientIP.Mid(nClient2 + 1, nClient3 - nClient2)),
 		(BYTE) _tstoi(strClientIP.Mid(nClient3 + 1, strClientIP.GetLength() - nClient3)));
 
-	CString strClientPort;
-	strClientPort.Format(_T("%d"), theApp.GetInt(_T("ClientPort"), 0));
+	CString strClientPort = _T("8080");
 	m_pClientPort.SetWindowText(strClientPort);
 	m_pClientPort.SetLimitText(5);
 
@@ -341,83 +172,83 @@ void CConfigureDlg::OnDestroy()
 
 void CConfigureDlg::OnOK()
 {
-	theApp.WriteInt(_T("Connection"), m_pConnection.GetCurSel());
+	theApp.m_nConnection = m_pConnection.GetCurSel();
 
 	CString strSerialPort;
 	if (m_pSerialPortNames.GetCount() > 0)
 		m_pSerialPortNames.GetLBText(m_pSerialPortNames.GetCurSel(), strSerialPort);
-	theApp.WriteString(_T("SerialName"), strSerialPort);
+	theApp.m_strSerialName = strSerialPort;
 
 	switch (m_pBaudRate.GetCurSel())
 	{
 		case 0:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_110);
+			theApp.m_nBaudRate = CBR_110;
 			break;
 		}
 		case 1:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_300);
+			theApp.m_nBaudRate = CBR_300;
 			break;
 		}
 		case 2:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_600);
+			theApp.m_nBaudRate = CBR_600;
 			break;
 		}
 		case 3:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_1200);
+			theApp.m_nBaudRate = CBR_1200;
 			break;
 		}
 		case 4:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_2400);
+			theApp.m_nBaudRate = CBR_2400;
 			break;
 		}
 		case 5:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_4800);
+			theApp.m_nBaudRate = CBR_4800;
 			break;
 		}
 		case 6:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_9600);
+			theApp.m_nBaudRate = CBR_9600;
 			break;
 		}
 		case 7:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_14400);
+			theApp.m_nBaudRate = CBR_14400;
 			break;
 		}
 		case 8:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_19200);
+			theApp.m_nBaudRate = CBR_19200;
 			break;
 		}
 		case 9:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_38400);
+			theApp.m_nBaudRate = CBR_38400;
 			break;
 		}
 		case 10:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_57600);
+			theApp.m_nBaudRate = CBR_57600;
 			break;
 		}
 		case 11:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_115200);
+			theApp.m_nBaudRate = CBR_115200;
 			break;
 		}
 		case 12:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_128000);
+			theApp.m_nBaudRate = CBR_128000;
 			break;
 		}
 		case 13:
 		{
-			theApp.WriteInt(_T("BaudRate"), CBR_256000);
+			theApp.m_nBaudRate = CBR_256000;
 			break;
 		}
 	}
@@ -426,12 +257,12 @@ void CConfigureDlg::OnOK()
 	{
 		case 0:
 		{
-			theApp.WriteInt(_T("DataBits"), 7);
+			theApp.m_nDataBits = 7;
 			break;
 		}
 		case 1:
 		{
-			theApp.WriteInt(_T("DataBits"), 8);
+			theApp.m_nDataBits = 8;
 			break;
 		}
 	}
@@ -440,27 +271,27 @@ void CConfigureDlg::OnOK()
 	{
 		case 0:
 		{
-			theApp.WriteInt(_T("Parity"), (int)CSerialPort::Parity::NoParity);
+			theApp.m_nParity = (int)CSerialPort::Parity::NoParity;
 			break;
 		}
 		case 1:
 		{
-			theApp.WriteInt(_T("Parity"), (int)CSerialPort::Parity::OddParity);
+			theApp.m_nParity = (int)CSerialPort::Parity::OddParity;
 			break;
 		}
 		case 2:
 		{
-			theApp.WriteInt(_T("Parity"), (int)CSerialPort::Parity::EvenParity);
+			theApp.m_nParity = (int)CSerialPort::Parity::EvenParity;
 			break;
 		}
 		case 3:
 		{
-			theApp.WriteInt(_T("Parity"), (int)CSerialPort::Parity::MarkParity);
+			theApp.m_nParity = (int)CSerialPort::Parity::MarkParity;
 			break;
 		}
 		case 4:
 		{
-			theApp.WriteInt(_T("Parity"), (int)CSerialPort::Parity::SpaceParity);
+			theApp.m_nParity = (int)CSerialPort::Parity::SpaceParity;
 			break;
 		}
 	}
@@ -469,17 +300,17 @@ void CConfigureDlg::OnOK()
 	{
 		case 0:
 		{
-			theApp.WriteInt(_T("StopBits"), (int)CSerialPort::StopBits::OneStopBit);
+			theApp.m_nStopBits = (int)CSerialPort::StopBits::OneStopBit;
 			break;
 		}
 		case 1:
 		{
-			theApp.WriteInt(_T("StopBits"), (int)CSerialPort::StopBits::OnePointFiveStopBits);
+			theApp.m_nStopBits = (int)CSerialPort::StopBits::OnePointFiveStopBits;
 			break;
 		}
 		case 2:
 		{
-			theApp.WriteInt(_T("StopBits"), (int)CSerialPort::StopBits::TwoStopBits);
+			theApp.m_nStopBits = (int)CSerialPort::StopBits::TwoStopBits;
 			break;
 		}
 	}
@@ -488,57 +319,57 @@ void CConfigureDlg::OnOK()
 	{
 		case 0:
 		{
-			theApp.WriteInt(_T("FlowControl"), (int)CSerialPort::FlowControl::NoFlowControl);
+			theApp.m_nFlowControl = (int)CSerialPort::FlowControl::NoFlowControl;
 			break;
 		}
 		case 1:
 		{
-			theApp.WriteInt(_T("FlowControl"), (int)CSerialPort::FlowControl::CtsRtsFlowControl);
+			theApp.m_nFlowControl = (int)CSerialPort::FlowControl::CtsRtsFlowControl;
 			break;
 		}
 		case 2:
 		{
-			theApp.WriteInt(_T("FlowControl"), (int)CSerialPort::FlowControl::CtsDtrFlowControl);
+			theApp.m_nFlowControl = (int)CSerialPort::FlowControl::CtsDtrFlowControl;
 			break;
 		}
 		case 3:
 		{
-			theApp.WriteInt(_T("FlowControl"), (int)CSerialPort::FlowControl::DsrRtsFlowControl);
+			theApp.m_nFlowControl = (int)CSerialPort::FlowControl::DsrRtsFlowControl;
 			break;
 		}
 		case 4:
 		{
-			theApp.WriteInt(_T("FlowControl"), (int)CSerialPort::FlowControl::DsrDtrFlowControl);
+			theApp.m_nFlowControl = (int)CSerialPort::FlowControl::DsrDtrFlowControl;
 			break;
 		}
 		case 5:
 		{
-			theApp.WriteInt(_T("FlowControl"), (int)CSerialPort::FlowControl::XonXoffFlowControl);
+			theApp.m_nFlowControl = (int)CSerialPort::FlowControl::XonXoffFlowControl;
 			break;
 		}
 	}
 
-	theApp.WriteInt(_T("SocketType"), m_pSocketType.GetCurSel());
+	theApp.m_nSocketType = m_pSocketType.GetCurSel();
 
 	CString strServerIP;
 	BYTE nServer1, nServer2, nServer3, nServer4;
 	m_pServerIP.GetAddress(nServer1, nServer2, nServer3, nServer4);
 	strServerIP.Format(_T("%d.%d.%d.%d"), nServer1, nServer2, nServer3, nServer4);
-	theApp.WriteString(_T("ServerIP"), strServerIP);
+	theApp.m_strServerIP = strServerIP;
 
 	CString strServerPort;
 	m_pServerPort.GetWindowText(strServerPort);
-	theApp.WriteInt(_T("ServerPort"), _tstoi(strServerPort));
+	theApp.m_nServerPort = _tstoi(strServerPort);
 
 	CString strClientIP;
 	BYTE nClient1, nClient2, nClient3, nClient4;
 	m_pClientIP.GetAddress(nClient1, nClient2, nClient3, nClient4);
 	strClientIP.Format(_T("%d.%d.%d.%d"), nClient1, nClient2, nClient3, nClient4);
-	theApp.WriteString(_T("ClientIP"), strClientIP);
+	theApp.m_strClientIP = strClientIP;
 
 	CString strClientPort;
 	m_pClientPort.GetWindowText(strClientPort);
-	theApp.WriteInt(_T("ClientPort"), _tstoi(strClientPort));
+	theApp.m_nClientPort = _tstoi(strClientPort);
 
 	CDialogEx::OnOK();
 }
@@ -554,14 +385,16 @@ void CConfigureDlg::OnSelchangeConnection()
 	m_pFlowControl.EnableWindow(m_pConnection.GetCurSel() == 0);
 
 	m_pSocketType.EnableWindow(m_pConnection.GetCurSel() != 0);
-	m_pServerIP.EnableWindow((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0));
-	m_pServerPort.EnableWindow((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0));
-	m_pClientIP.EnableWindow(m_pConnection.GetCurSel() != 0);
-	m_pClientPort.EnableWindow(m_pConnection.GetCurSel() != 0);
+	m_pServerIP.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0)) || (m_pConnection.GetCurSel() == 2));
+	m_pServerPort.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0)) || (m_pConnection.GetCurSel() == 2));
+	m_pClientIP.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() == 0)) || (m_pConnection.GetCurSel() == 2));
+	m_pClientPort.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() == 0)) || (m_pConnection.GetCurSel() == 2));
 }
 
 void CConfigureDlg::OnSelchangeSocketType()
 {
-	m_pServerIP.EnableWindow((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0));
-	m_pServerPort.EnableWindow((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0));
+	m_pServerIP.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0)) || (m_pConnection.GetCurSel() == 2));
+	m_pServerPort.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() != 0)) || (m_pConnection.GetCurSel() == 2));
+	m_pClientIP.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() == 0)) || (m_pConnection.GetCurSel() == 2));
+	m_pClientPort.EnableWindow(((m_pConnection.GetCurSel() != 0) && (m_pSocketType.GetCurSel() == 0)) || (m_pConnection.GetCurSel() == 2));
 }

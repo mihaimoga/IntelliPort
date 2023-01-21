@@ -328,19 +328,19 @@ void CMainFrame::OnConfigureSerialPort()
 void CMainFrame::OnOpenSerialPort()
 {
 	CString strFormat, strMessage;
-	switch (theApp.GetInt(_T("Connection"), 0))
+	switch (theApp.m_nConnection)
 	{
 		case 0:
 		{
 			CString strFullPortName;
-			strFullPortName.Format(_T("\\\\.\\%s"), theApp.GetString(_T("SerialName"), _T("COM1")));
+			strFullPortName.Format(_T("\\\\.\\%s"), theApp.m_strSerialName);
 			m_pSerialPort.Open(
 				strFullPortName,
-				theApp.GetInt(_T("BaudRate"), CBR_115200),
-				(CSerialPort::Parity) theApp.GetInt(_T("Parity"), (int)CSerialPort::Parity::NoParity),
-				(BYTE) theApp.GetInt(_T("DataBits"), 8),
-				(CSerialPort::StopBits) theApp.GetInt(_T("StopBits"), (int)CSerialPort::StopBits::OneStopBit),
-				(CSerialPort::FlowControl) theApp.GetInt(_T("FlowControl"), (int)CSerialPort::FlowControl::NoFlowControl),
+				theApp.m_nBaudRate,
+				(CSerialPort::Parity) theApp.m_nParity,
+				(BYTE) theApp.m_nDataBits,
+				(CSerialPort::StopBits) theApp.m_nStopBits,
+				(CSerialPort::FlowControl) theApp.m_nFlowControl,
 				FALSE);
 
 			if (m_pSerialPort.IsOpen())
@@ -348,7 +348,7 @@ void CMainFrame::OnOpenSerialPort()
 				m_nThreadRunning = TRUE;
 				AfxBeginThread(SerialPortThreadFunc, this);
 				strFormat.LoadString(IDS_SERIAL_PORT_OPENED);
-				strMessage.Format(strFormat, theApp.GetString(_T("SerialName"), _T("COM1")));
+				strMessage.Format(strFormat, theApp.m_strSerialName);
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -356,45 +356,46 @@ void CMainFrame::OnOpenSerialPort()
 		case 1:
 		case 2:
 		{
-			CString strServerIP = theApp.GetString(_T("ServerIP"), _T("127.0.0.1"));
-			if (strServerIP.IsEmpty()) strServerIP = _T("127.0.0.1");
-			UINT nServerPort = theApp.GetInt(_T("ServerPort"), 0);
-			CString strClientIP = theApp.GetString(_T("ClientIP"), _T("127.0.0.1"));
-			if (strClientIP.IsEmpty()) strClientIP = _T("127.0.0.1");
-			UINT nClientPort = theApp.GetInt(_T("ClientPort"), 0);
+			CString strServerIP = theApp.m_strServerIP;
+			UINT nServerPort = theApp.m_nServerPort;
+			CString strClientIP = theApp.m_strClientIP;
+			UINT nClientPort = theApp.m_nClientPort;
 
-			m_pSocket.SetBindAddress(strClientIP);
-			m_pSocket.CreateAndBind(nClientPort, ((theApp.GetInt(_T("Connection"), 0) == 1) ? SOCK_STREAM : SOCK_DGRAM), AF_INET);
+			if (theApp.m_nConnection == 1) // TCP Socket
+			{
+				if (theApp.m_nSocketType == 1) // Client
+				{
+					m_pSocket.CreateAndConnect(strServerIP, nServerPort);
+				}
+				else // TCP Server
+				{
+					m_pSocket.SetBindAddress(strClientIP);
+					m_pSocket.CreateAndBind(nClientPort, SOCK_STREAM, AF_INET);
+
+					m_dlgIncoming.ShowWindow(SW_SHOW);
+					m_dlgIncoming.CenterWindow(this);
+					m_dlgIncoming.Invalidate();
+					m_dlgIncoming.UpdateWindow();
+					m_pSocket.Listen();
+					m_pSocket.Accept(m_pIncomming);
+					m_dlgIncoming.ShowWindow(SW_HIDE);
+				}
+			}
+			else // UDP Socket
+			{
+				m_pSocket.SetBindAddress(strClientIP);
+				m_pSocket.CreateAndBind(nClientPort, SOCK_DGRAM, AF_INET);
+
+				strServerIP = strClientIP;
+				nServerPort = nClientPort;
+			}
 
 			if (m_pSocket.IsCreated())
 			{
-				if (theApp.GetInt(_T("Connection"), 0) == 1) // TCP Socket
-				{
-					if (theApp.GetInt(_T("SocketType"), 0) == 1) // Client
-					{
-						m_pSocket.CreateAndConnect(strServerIP, nServerPort);
-					}
-					else // TCP Server
-					{
-						m_dlgIncoming.ShowWindow(SW_SHOW);
-						m_dlgIncoming.CenterWindow(this);
-						m_dlgIncoming.Invalidate();
-						m_dlgIncoming.UpdateWindow();
-						m_pSocket.Listen();
-						m_pSocket.Accept(m_pIncomming);
-						m_dlgIncoming.ShowWindow(SW_HIDE);
-					}
-				}
-				else // UDP Socket
-				{
-					strServerIP = strClientIP;
-					nServerPort = nClientPort;
-				}
-
 				m_nThreadRunning = TRUE;
 				AfxBeginThread(SocketThreadFunc, this);
 				strFormat.LoadString(IDS_SOCKET_CREATED);
-				strMessage.Format(strFormat, ((theApp.GetInt(_T("Connection"), 0) == 1) ? _T("TCP") : _T("UDP")), strServerIP, nServerPort);
+				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), strServerIP, nServerPort);
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -407,7 +408,7 @@ void CMainFrame::OnCloseSerialPort()
 	CString strFormat, strMessage;
 	m_nThreadRunning = FALSE;
 	::Sleep(1000);
-	switch (theApp.GetInt(_T("Connection"), 0))
+	switch (theApp.m_nConnection)
 	{
 		case 0:
 		{
@@ -416,7 +417,7 @@ void CMainFrame::OnCloseSerialPort()
 			if (!m_pSerialPort.IsOpen())
 			{
 				strFormat.LoadString(IDS_SERIAL_PORT_CLOSED);
-				strMessage.Format(strFormat, theApp.GetString(_T("SerialName"), _T("COM1")));
+				strMessage.Format(strFormat, theApp.m_strSerialName);
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -424,21 +425,19 @@ void CMainFrame::OnCloseSerialPort()
 		case 1:
 		case 2:
 		{
-			CString strServerIP = theApp.GetString(_T("ServerIP"), _T("127.0.0.1"));
-			if (strServerIP.IsEmpty()) strServerIP = _T("127.0.0.1");
-			UINT nServerPort = theApp.GetInt(_T("ServerPort"), 0);
-			CString strClientIP = theApp.GetString(_T("ClientIP"), _T("127.0.0.1"));
-			if (strClientIP.IsEmpty()) strClientIP = _T("127.0.0.1");
-			UINT nClientPort = theApp.GetInt(_T("ClientPort"), 0);
+			CString strServerIP = theApp.m_strServerIP;
+			UINT nServerPort = theApp.m_nServerPort;
+			CString strClientIP = theApp.m_strClientIP;
+			UINT nClientPort = theApp.m_nClientPort;
 
 			m_pSocket.Close();
 			m_pIncomming.Close();
 
 			if (!m_pSocket.IsCreated())
 			{
-				if (theApp.GetInt(_T("Connection"), 0) == 1) // TCP Socket
+				if (theApp.m_nConnection == 1) // TCP Socket
 				{
-					if (theApp.GetInt(_T("SocketType"), 0) == 1) // Client
+					if (theApp.m_nSocketType == 1) // Client
 					{
 					}
 					else // TCP Server
@@ -452,7 +451,7 @@ void CMainFrame::OnCloseSerialPort()
 				}
 
 				strFormat.LoadString(IDS_SOCKET_CLOSED);
-				strMessage.Format(strFormat, ((theApp.GetInt(_T("Connection"), 0) == 1) ? _T("TCP") : _T("UDP")), strServerIP, nServerPort);
+				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), strServerIP, nServerPort);
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -468,7 +467,7 @@ void CMainFrame::OnSendReceive()
 		CStringA pBuffer(dlgInput.m_strSendData);
 		const int nLength = pBuffer.GetLength();
 
-		switch (theApp.GetInt(_T("Connection"), 0))
+		switch (theApp.m_nConnection)
 		{
 			case 0:
 			{
@@ -481,13 +480,12 @@ void CMainFrame::OnSendReceive()
 			case 1:
 			case 2:
 			{
-				CString strServerIP = theApp.GetString(_T("ServerIP"), _T("127.0.0.1"));
-				if (strServerIP.IsEmpty()) strServerIP = _T("127.0.0.1");
-				const UINT nServerPort = theApp.GetInt(_T("ServerPort"), 0);
+				CString strServerIP = theApp.m_strServerIP;
+				const UINT nServerPort = theApp.m_nServerPort;
 
-				if (theApp.GetInt(_T("Connection"), 0) == 1) // TCP Socket
+				if (theApp.m_nConnection == 1) // TCP Socket
 				{
-					if (theApp.GetInt(_T("SocketType"), 0) == 1) // Client
+					if (theApp.m_nSocketType == 1) // Client
 					{
 						if (m_pSocket.IsWritable(1000))
 						{
@@ -581,12 +579,11 @@ UINT SocketThreadFunc(LPVOID pParam)
 	CWSocket& pSocket = pMainFrame->m_pSocket;
 	CWSocket& pIncomming = pMainFrame->m_pIncomming;
 	std::mutex& pMutualAccess = pMainFrame->m_pMutualAccess;
-	BOOL bIsTCP = (theApp.GetInt(_T("Connection"), 0) == 1);
-	BOOL bIsClient = (theApp.GetInt(_T("SocketType"), 0) == 1);
+	BOOL bIsTCP = (theApp.m_nConnection == 1);
+	BOOL bIsClient = (theApp.m_nSocketType == 1);
 
-	CString strServerIP = theApp.GetString(_T("ServerIP"), _T("127.0.0.1"));
-	if (strServerIP.IsEmpty()) strServerIP = _T("127.0.0.1");
-	UINT nServerPort = theApp.GetInt(_T("ServerPort"), 0);
+	CString strServerIP = theApp.m_strServerIP;
+	UINT nServerPort = theApp.m_nServerPort;
 
 	while (pMainFrame->m_nThreadRunning)
 	{

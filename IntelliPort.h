@@ -20,7 +20,6 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 #endif
 
 #include "resource.h"       // main symbols
-#include "sinstance.h"
 
 // CIntelliPortApp:
 // See IntelliPort.cpp for the implementation of this class
@@ -28,6 +27,20 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 
 class CIntelliPortApp : public CWinAppEx
 {
+public:
+	int m_nConnection;
+	CString m_strSerialName;
+	int m_nBaudRate;
+	int m_nDataBits;
+	int m_nParity;
+	int m_nStopBits;
+	int m_nFlowControl;
+	int m_nSocketType;
+	CString m_strServerIP;
+	int m_nServerPort;
+	CString m_strClientIP;
+	int m_nClientPort;
+
 public:
 	CIntelliPortApp();
 
@@ -43,7 +56,6 @@ public:
 	virtual void SaveCustomState();
 
 protected:
-	CInstanceChecker m_InstanceChecker;
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 };

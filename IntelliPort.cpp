@@ -41,7 +41,7 @@ END_MESSAGE_MAP()
 
 // CIntelliPortApp construction
 
-CIntelliPortApp::CIntelliPortApp() : m_InstanceChecker(_T("IntelliPort"))
+CIntelliPortApp::CIntelliPortApp()
 {
 	EnableHtmlHelp();
 
@@ -138,14 +138,6 @@ BOOL CIntelliPortApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-	// Check for the previous instance as soon as possible
-	if (m_InstanceChecker.PreviousInstanceRunning())
-	{
-		AfxMessageBox(_T("Previous version detected, will now restore it"), MB_OK | MB_ICONINFORMATION);
-		m_InstanceChecker.ActivatePreviousInstance(cmdInfo.m_strFileName);
-		return FALSE;
-	}
-
 	// Enable DDE Execute open
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);
@@ -163,8 +155,6 @@ BOOL CIntelliPortApp::InitInstance()
 	// Enable drag/drop open
 	m_pMainWnd->DragAcceptFiles();
 
-	// If this is the first instance of our App then track it so any other instances can find us
-	m_InstanceChecker.TrackFirstInstanceRunning(m_pMainWnd->GetSafeHwnd());
 	return TRUE;
 }
 
@@ -268,7 +258,7 @@ BOOL CAboutDlg::OnInitDialog()
 
 	m_ctrlWebsite.SetHyperlink(_T("https://www.emvs.site/"));
 	m_ctrlEmail.SetHyperlink(_T("mailto:contact@emvs.site"));
-	m_ctrlContributors.SetHyperlink(_T("https://gitlab.com/mihaimoga/intelliport/-/graphs/master"));
+	m_ctrlContributors.SetHyperlink(_T("https://github.com/mihaimoga/IntelliPort/graphs/contributors"));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
