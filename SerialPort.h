@@ -365,37 +365,37 @@ public:
 		//Setup the Parity
 		switch (parity)
 		{
-		case Parity::EvenParity:
-		{
-			dcb.Parity = EVENPARITY;
-			break;
-		}
-		case Parity::MarkParity:
-		{
-			dcb.Parity = MARKPARITY;
-			break;
-		}
-		case Parity::NoParity:
-		{
-			dcb.Parity = NOPARITY;
-			break;
-		}
-		case Parity::OddParity:
-		{
-			dcb.Parity = ODDPARITY;
-			break;
-		}
-		case Parity::SpaceParity:
-		{
-			dcb.Parity = SPACEPARITY;
-			break;
-		}
-		default:
-		{
+			case Parity::EvenParity:
+			{
+				dcb.Parity = EVENPARITY;
+				break;
+			}
+			case Parity::MarkParity:
+			{
+				dcb.Parity = MARKPARITY;
+				break;
+			}
+			case Parity::NoParity:
+			{
+				dcb.Parity = NOPARITY;
+				break;
+			}
+			case Parity::OddParity:
+			{
+				dcb.Parity = ODDPARITY;
+				break;
+			}
+			case Parity::SpaceParity:
+			{
+				dcb.Parity = SPACEPARITY;
+				break;
+			}
+			default:
+			{
 #pragma warning(suppress: 26477)
-			ATLASSERT(FALSE);
-			break;
-		}
+				ATLASSERT(FALSE);
+				break;
+			}
 		}
 
 		//Setup the data bits
@@ -404,95 +404,95 @@ public:
 		//Setup the stop bits
 		switch (stopBits)
 		{
-		case StopBits::OneStopBit:
-		{
-			dcb.StopBits = ONESTOPBIT;
-			break;
-		}
-		case StopBits::OnePointFiveStopBits:
-		{
-			dcb.StopBits = ONE5STOPBITS;
-			break;
-		}
-		case StopBits::TwoStopBits:
-		{
-			dcb.StopBits = TWOSTOPBITS;
-			break;
-		}
-		default:
-		{
+			case StopBits::OneStopBit:
+			{
+				dcb.StopBits = ONESTOPBIT;
+				break;
+			}
+			case StopBits::OnePointFiveStopBits:
+			{
+				dcb.StopBits = ONE5STOPBITS;
+				break;
+			}
+			case StopBits::TwoStopBits:
+			{
+				dcb.StopBits = TWOSTOPBITS;
+				break;
+			}
+			default:
+			{
 #pragma warning(suppress: 26477)
-			ATLASSERT(FALSE);
-			break;
-		}
+				ATLASSERT(FALSE);
+				break;
+			}
 		}
 
 		//Setup the flow control
 		dcb.fDsrSensitivity = FALSE;
 		switch (fc)
 		{
-		case FlowControl::NoFlowControl:
-		{
-			dcb.fOutxCtsFlow = FALSE;
-			dcb.fOutxDsrFlow = FALSE;
-			dcb.fOutX = FALSE;
-			dcb.fInX = FALSE;
-			break;
-		}
-		case FlowControl::CtsRtsFlowControl:
-		{
-			dcb.fOutxCtsFlow = TRUE;
-			dcb.fOutxDsrFlow = FALSE;
-			dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
-			dcb.fOutX = FALSE;
-			dcb.fInX = FALSE;
-			break;
-		}
-		case FlowControl::CtsDtrFlowControl:
-		{
-			dcb.fOutxCtsFlow = TRUE;
-			dcb.fOutxDsrFlow = FALSE;
-			dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
-			dcb.fOutX = FALSE;
-			dcb.fInX = FALSE;
-			break;
-		}
-		case FlowControl::DsrRtsFlowControl:
-		{
-			dcb.fOutxCtsFlow = FALSE;
-			dcb.fOutxDsrFlow = TRUE;
-			dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
-			dcb.fOutX = FALSE;
-			dcb.fInX = FALSE;
-			break;
-		}
-		case FlowControl::DsrDtrFlowControl:
-		{
-			dcb.fOutxCtsFlow = FALSE;
-			dcb.fOutxDsrFlow = TRUE;
-			dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
-			dcb.fOutX = FALSE;
-			dcb.fInX = FALSE;
-			break;
-		}
-		case FlowControl::XonXoffFlowControl:
-		{
-			dcb.fOutxCtsFlow = FALSE;
-			dcb.fOutxDsrFlow = FALSE;
-			dcb.fOutX = TRUE;
-			dcb.fInX = TRUE;
-			dcb.XonChar = 0x11;
-			dcb.XoffChar = 0x13;
-			dcb.XoffLim = 100;
-			dcb.XonLim = 100;
-			break;
-		}
-		default:
-		{
+			case FlowControl::NoFlowControl:
+			{
+				dcb.fOutxCtsFlow = FALSE;
+				dcb.fOutxDsrFlow = FALSE;
+				dcb.fOutX = FALSE;
+				dcb.fInX = FALSE;
+				break;
+			}
+			case FlowControl::CtsRtsFlowControl:
+			{
+				dcb.fOutxCtsFlow = TRUE;
+				dcb.fOutxDsrFlow = FALSE;
+				dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
+				dcb.fOutX = FALSE;
+				dcb.fInX = FALSE;
+				break;
+			}
+			case FlowControl::CtsDtrFlowControl:
+			{
+				dcb.fOutxCtsFlow = TRUE;
+				dcb.fOutxDsrFlow = FALSE;
+				dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
+				dcb.fOutX = FALSE;
+				dcb.fInX = FALSE;
+				break;
+			}
+			case FlowControl::DsrRtsFlowControl:
+			{
+				dcb.fOutxCtsFlow = FALSE;
+				dcb.fOutxDsrFlow = TRUE;
+				dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
+				dcb.fOutX = FALSE;
+				dcb.fInX = FALSE;
+				break;
+			}
+			case FlowControl::DsrDtrFlowControl:
+			{
+				dcb.fOutxCtsFlow = FALSE;
+				dcb.fOutxDsrFlow = TRUE;
+				dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
+				dcb.fOutX = FALSE;
+				dcb.fInX = FALSE;
+				break;
+			}
+			case FlowControl::XonXoffFlowControl:
+			{
+				dcb.fOutxCtsFlow = FALSE;
+				dcb.fOutxDsrFlow = FALSE;
+				dcb.fOutX = TRUE;
+				dcb.fInX = TRUE;
+				dcb.XonChar = 0x11;
+				dcb.XoffChar = 0x13;
+				dcb.XoffLim = 100;
+				dcb.XonLim = 100;
+				break;
+			}
+			default:
+			{
 #pragma warning(suppress: 26477)
-			ATLASSERT(FALSE);
-			break;
-		}
+				ATLASSERT(FALSE);
+				break;
+			}
 		}
 
 		//Now that we have all the settings in place, make the changes
