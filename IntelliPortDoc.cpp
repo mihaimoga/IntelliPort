@@ -1,4 +1,4 @@
-/* This file is part of IntelliPort application developed by Mihai MOGA.
+/* This file is part of IntelliPort application developed by Stefan-Mihai MOGA.
 
 IntelliPort is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the Open
