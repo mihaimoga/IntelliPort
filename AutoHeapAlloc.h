@@ -34,7 +34,7 @@ class CAutoHeapAlloc
 {
 public:
 	//Constructors / Destructors
-	CAutoHeapAlloc(HANDLE hHeap = GetProcessHeap(), DWORD dwHeapFreeFlags = 0) : m_pData(NULL),
+	CAutoHeapAlloc(HANDLE hHeap = GetProcessHeap(), DWORD dwHeapFreeFlags = 0) : m_pData(nullptr),
 		m_hHeap(hHeap),
 		m_dwHeapFreeFlags(dwHeapFreeFlags)
 	{
@@ -43,18 +43,18 @@ public:
 	BOOL Allocate(SIZE_T dwBytes, DWORD dwFlags = 0)
 	{
 		//Validate our parameters
-		assert(m_pData == NULL);
+		assert(m_pData == nullptr);
 
 		m_pData = HeapAlloc(m_hHeap, dwFlags, dwBytes);
-		return (m_pData != NULL);
+		return (m_pData != nullptr);
 	}
 
 	~CAutoHeapAlloc()
 	{
-		if (m_pData != NULL)
+		if (m_pData != nullptr)
 		{
 			HeapFree(m_hHeap, m_dwHeapFreeFlags, m_pData);
-			m_pData = NULL;
+			m_pData = nullptr;
 		}
 	}
 

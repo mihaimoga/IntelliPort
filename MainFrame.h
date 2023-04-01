@@ -41,12 +41,12 @@ public:
 
 // Implementation
 public:
-	BOOL CreateCaptionBar();
+	bool CreateCaptionBar();
 	virtual ~CMainFrame();
-	BOOL SetStatusBarText(CString strMessage);
-	BOOL SetCaptionBarText(CString strMessage);
-	BOOL HideMessageBar();
-	BOOL AddText(CString strText);
+	bool SetStatusBarText(const CString& strMessage);
+	bool SetCaptionBarText(const CString& strMessage);
+	bool HideMessageBar();
+	bool AddText(CString strText);
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -68,7 +68,7 @@ public:
 	CWSocket m_pIncomming;
 	CTime m_pCurrentDateTime;
 	UINT_PTR m_nTimerID;
-	BOOL m_nThreadRunning;
+	bool m_nThreadRunning;
 
 // Generated message map functions
 protected:

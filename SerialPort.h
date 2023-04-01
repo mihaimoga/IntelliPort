@@ -162,8 +162,10 @@ History: PJN / 03-06-1999 1. Fixed problem with code using CancelIo which does n
          PJN / 07-11-2019 1. Updated initialization of various structs to use C++ 11 list initialization
          PJN / 12-04-2020 1. Updated copyright details.
                           2. Fixed more Clang-Tidy static code analysis warnings in the code.
+         PJN / 17-02-2022 1. Updated copyright details.
+                          2. Updated the code to use C++ uniform initialization for all variable declarations
 
-Copyright (c) 1999 - 2020 by PJ Naughter. (Web: www.naughter.com, Email: pjna@naughter.com)
+Copyright (c) 1999 - 2022 by PJ Naughter. (Web: www.naughter.com, Email: pjna@naughter.com)
 
 All rights reserved.
 
@@ -190,7 +192,7 @@ to maintain a single distribution point for the source code.
 #endif //#ifndef CSERIALPORT_EXT_CLASS
 
 
-////////////////////////// Includes ///////////////////////////////////////////
+///////////////////// Includes ////////////////////////////////////////////////
 
 #include <exception>
 
@@ -206,13 +208,13 @@ to maintain a single distribution point for the source code.
 
 
 
-/////////////////////////// Classes ///////////////////////////////////////////
+///////////////////// Classes /////////////////////////////////////////////////
 
 class CSERIALPORT_EXT_CLASS CSerialException : public std::exception
 {
 public:
 	//Constructors / Destructors
-	CSerialException(_In_ DWORD dwError) noexcept : m_dwError(dwError)
+	CSerialException(_In_ DWORD dwError) noexcept : m_dwError{ dwError }
 	{
 	}
 
@@ -228,8 +230,8 @@ public:
 			*pnHelpContext = 0;
 
 		//What will be the return value from this function (assume the worst)
-		BOOL bSuccess = FALSE;
-		LPTSTR lpBuffer = nullptr;
+		BOOL bSuccess{ FALSE };
+		LPTSTR lpBuffer{ nullptr };
 		const DWORD dwReturn = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 			nullptr, m_dwError, MAKELANGID(LANG_NEUTRAL, SUBLANG_SYS_DEFAULT),
 #pragma warning(suppress: 26490)
@@ -278,19 +280,19 @@ public:
 
 	enum class StopBits
 	{
-		OneStopBit,
-		OnePointFiveStopBits,
-		TwoStopBits
+		OneStopBit = 0,
+		OnePointFiveStopBits = 1,
+		TwoStopBits = 2
 	};
 
 	//Constructors / Destructors
-	CSerialPort2() noexcept : m_hComm(INVALID_HANDLE_VALUE)
+	CSerialPort2() noexcept : m_hComm{ INVALID_HANDLE_VALUE }
 	{
 	}
 
 	CSerialPort2(_In_ const CSerialPort2&) = delete;
 
-	CSerialPort2(CSerialPort2&& port) noexcept : m_hComm(INVALID_HANDLE_VALUE)
+	CSerialPort2(CSerialPort2&& port) noexcept : m_hComm{ INVALID_HANDLE_VALUE }
 	{
 		Attach(port.Detach());
 	}
@@ -353,7 +355,7 @@ public:
 		dcb.DCBlength = sizeof(DCB);
 		if (!GetState(dcb))
 		{
-			const DWORD dwLastError = GetLastError();
+			const DWORD dwLastError{ GetLastError() };
 			Close();
 			SetLastError(dwLastError);
 			return FALSE;
@@ -498,7 +500,7 @@ public:
 		//Now that we have all the settings in place, make the changes
 		if (!SetState(dcb))
 		{
-			const DWORD dwLastError = GetLastError();
+			const DWORD dwLastError{ GetLastError() };
 			Close();
 			SetLastError(dwLastError);
 			return FALSE;
@@ -530,7 +532,7 @@ public:
 
 	HANDLE Detach() noexcept
 	{
-		HANDLE hComm = m_hComm; //What will be the return value from this function
+		HANDLE hComm{ m_hComm }; //What will be the return value from this function
 		m_hComm = INVALID_HANDLE_VALUE;
 		return hComm;
 	}
@@ -622,7 +624,7 @@ public:
 
 	__if_exists(::GetOverlappedResultEx)
 	{
-		BOOL GetOverlappedResultEx(_In_ OVERLAPPED & overlapped, _Out_ DWORD & dwBytesTransferred, _In_ DWORD dwMilliseconds, _In_ BOOL bAlertable) noexcept
+		BOOL GetOverlappedResultEx(_In_ OVERLAPPED& overlapped, _Out_ DWORD& dwBytesTransferred, _In_ DWORD dwMilliseconds, _In_ BOOL bAlertable) noexcept
 		{
 			//Validate our parameters
 #pragma warning(suppress: 26477)
@@ -661,7 +663,7 @@ public:
 
 		//Check to see how many characters are unread
 		dwBytesWaiting = 0;
-		COMSTAT stat;
+		COMSTAT stat{};
 		if (!GetStatus(stat))
 			return FALSE;
 		dwBytesWaiting = stat.cbInQue;
@@ -675,7 +677,7 @@ public:
 #pragma warning(suppress: 26477)
 		ATLASSERT(IsOpen());
 
-		DWORD dwSize = sizeof(COMMCONFIG);
+		DWORD dwSize{ sizeof(COMMCONFIG) };
 		return GetCommConfig(m_hComm, &config, &dwSize);
 	}
 
@@ -691,7 +693,7 @@ public:
 
 	static BOOL GetDefaultConfig(_In_z_ LPCTSTR pszPort, _Out_ COMMCONFIG& config) noexcept
 	{
-		DWORD dwSize = sizeof(COMMCONFIG);
+		DWORD dwSize{ sizeof(COMMCONFIG) };
 		return GetDefaultCommConfig(pszPort, &config, &dwSize);
 	}
 
@@ -701,7 +703,7 @@ public:
 #pragma warning(suppress: 26477)
 		ATLASSERT(IsOpen());
 
-		constexpr const DWORD dwSize = sizeof(COMMCONFIG);
+		constexpr const DWORD dwSize{ sizeof(COMMCONFIG) };
 		return SetCommConfig(m_hComm, &config, dwSize);
 	}
 
@@ -717,7 +719,7 @@ public:
 
 	static BOOL SetDefaultConfig(_In_z_ LPCTSTR pszPort, _In_ COMMCONFIG& config) noexcept
 	{
-		constexpr const DWORD dwSize = sizeof(COMMCONFIG);
+		constexpr const DWORD dwSize{ sizeof(COMMCONFIG) };
 		return SetDefaultCommConfig(pszPort, &config, dwSize);
 	}
 
@@ -755,7 +757,7 @@ public:
 #pragma warning(suppress: 26477)
 		ATLASSERT(IsOpen());
 
-		DWORD dwErrors = 0;
+		DWORD dwErrors{ 0 };
 		return ClearCommError(m_hComm, &dwErrors, &stat);
 	}
 
@@ -855,15 +857,14 @@ public:
 
 	BOOL Set0Timeout() noexcept
 	{
-		COMMTIMEOUTS Timeouts;
-		memset(&Timeouts, 0, sizeof(Timeouts));
+		COMMTIMEOUTS Timeouts{};
 		Timeouts.ReadIntervalTimeout = MAXDWORD;
 		return SetTimeouts(Timeouts);
 	}
 
 	BOOL Set0WriteTimeout() noexcept
 	{
-		COMMTIMEOUTS Timeouts;
+		COMMTIMEOUTS Timeouts{};
 		GetTimeouts(Timeouts);
 		Timeouts.WriteTotalTimeoutMultiplier = 0;
 		Timeouts.WriteTotalTimeoutConstant = 0;
@@ -872,7 +873,7 @@ public:
 
 	BOOL Set0ReadTimeout() noexcept
 	{
-		COMMTIMEOUTS Timeouts;
+		COMMTIMEOUTS Timeouts{};
 		GetTimeouts(Timeouts);
 		Timeouts.ReadIntervalTimeout = MAXDWORD;
 		Timeouts.ReadTotalTimeoutMultiplier = 0;
@@ -983,7 +984,7 @@ public:
 #pragma warning(suppress: 26434)
 		void Open(_In_ ULONG uPortNumber, _In_ DWORD dwDesiredAccess, _In_ DWORD dwFlagsAndAttributes)
 		{
-			BOOL bSuccess = __super::Open(uPortNumber, dwDesiredAccess, dwFlagsAndAttributes);
+			const BOOL bSuccess{ __super::Open(uPortNumber, dwDesiredAccess, dwFlagsAndAttributes) };
 			if (!bSuccess)
 				ThrowSerialException();
 		}
@@ -992,7 +993,7 @@ public:
 #pragma warning(suppress: 26434)
 	void Open(_In_z_ LPCTSTR pszPort, _In_ BOOL bOverlapped = FALSE)
 	{
-		const BOOL bSuccess = __super::Open(pszPort, bOverlapped);
+		const BOOL bSuccess{ __super::Open(pszPort, bOverlapped) };
 		if (!bSuccess)
 			ThrowSerialException();
 	}
@@ -1001,7 +1002,7 @@ public:
 	void Open(_In_ int nPort, _In_ DWORD dwBaud = 9600, _In_ Parity parity = Parity::NoParity, _In_ BYTE DataBits = 8,
 		_In_ StopBits stopBits = StopBits::OneStopBit, _In_ FlowControl fc = FlowControl::NoFlowControl, _In_ BOOL bOverlapped = FALSE)
 	{
-		const BOOL bSuccess = __super::Open(nPort, dwBaud, parity, DataBits, stopBits, fc, bOverlapped);
+		const BOOL bSuccess{ __super::Open(nPort, dwBaud, parity, DataBits, stopBits, fc, bOverlapped) };
 		if (!bSuccess)
 			ThrowSerialException();
 	}
@@ -1010,7 +1011,7 @@ public:
 	void Open(_In_z_ LPCTSTR pszPort, _In_ DWORD dwBaud = 9600, _In_ Parity parity = Parity::NoParity, _In_ BYTE DataBits = 8,
 		_In_ StopBits stopBits = StopBits::OneStopBit, _In_ FlowControl fc = FlowControl::NoFlowControl, _In_ BOOL bOverlapped = FALSE)
 	{
-		const BOOL bSuccess = __super::Open(pszPort, dwBaud, parity, DataBits, stopBits, fc, bOverlapped);
+		const BOOL bSuccess{ __super::Open(pszPort, dwBaud, parity, DataBits, stopBits, fc, bOverlapped) };
 		if (!bSuccess)
 			ThrowSerialException();
 	}
@@ -1019,7 +1020,7 @@ public:
 #pragma warning(suppress: 26434)
 	DWORD Read(_Out_writes_bytes_(dwNumberOfBytesToRead) __out_data_source(FILE) void* lpBuffer, _In_ DWORD dwNumberOfBytesToRead)
 	{
-		DWORD dwBytesRead = 0;
+		DWORD dwBytesRead{ 0 };
 		if (!__super::Read(lpBuffer, dwNumberOfBytesToRead, dwBytesRead))
 			ThrowSerialException();
 
@@ -1043,7 +1044,7 @@ public:
 #pragma warning(suppress: 26434)
 	DWORD Write(_In_reads_bytes_opt_(dwNumberOfBytesToWrite) const void* lpBuffer, _In_ DWORD dwNumberOfBytesToWrite)
 	{
-		DWORD dwBytesWritten = 0;
+		DWORD dwBytesWritten{ 0 };
 		if (!__super::Write(lpBuffer, dwNumberOfBytesToWrite, dwBytesWritten))
 			ThrowSerialException();
 
@@ -1081,7 +1082,7 @@ public:
 	__if_exists(::GetOverlappedResultEx)
 	{
 #pragma warning(suppress: 26434)
-		void GetOverlappedResultEx(_In_ OVERLAPPED & overlapped, _Out_ DWORD & dwBytesTransferred, _In_ DWORD dwMilliseconds, _In_ BOOL bAlertable)
+		void GetOverlappedResultEx(_In_ OVERLAPPED& overlapped, _Out_ DWORD& dwBytesTransferred, _In_ DWORD dwMilliseconds, _In_ BOOL bAlertable)
 		{
 			if (!__super::GetOverlappedResultEx(overlapped, dwBytesTransferred, dwMilliseconds, bAlertable))
 				ThrowSerialException();
@@ -1108,7 +1109,7 @@ public:
 #pragma warning(suppress: 26434)
 	DWORD BytesWaiting()
 	{
-		DWORD dwBytesWaiting = 0;
+		DWORD dwBytesWaiting{ 0 };
 		if (!__super::BytesWaiting(dwBytesWaiting))
 			ThrowSerialException();
 		return dwBytesWaiting;
@@ -1320,7 +1321,7 @@ public:
 #pragma warning(suppress: 26434)
 	void WaitEvent(_Inout_ DWORD& dwMask, _Inout_ OVERLAPPED& overlapped)
 	{
-		const BOOL bSuccess = __super::WaitEvent(dwMask, overlapped);
+		const BOOL bSuccess{ __super::WaitEvent(dwMask, overlapped) };
 		if (!bSuccess)
 			ThrowSerialException();
 	}

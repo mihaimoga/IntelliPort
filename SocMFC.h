@@ -3,7 +3,7 @@ Module : SocMFC.h
 Purpose: Interface for a C++ wrapper class for sockets
 Created: PJN / 05-08-1998
 
-Copyright (c) 2002 - 2020 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
+Copyright (c) 2002 - 2022 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
 
 All rights reserved.
 
@@ -18,7 +18,7 @@ to maintain a single distribution point for the source code.
 */
 
 
-/////////////////////////////// Macros / Defines //////////////////////////////
+//////////////////// Macros / Defines /////////////////////////////////////////
 
 #pragma once
 
@@ -41,11 +41,11 @@ __if_not_exists(SOCKADDR_INET)
 		SOCKADDR_IN Ipv4;
 		SOCKADDR_IN6 Ipv6;
 		ADDRESS_FAMILY si_family;
-	} SOCKADDR_INET, * PSOCKADDR_INET;
+	} SOCKADDR_INET, *PSOCKADDR_INET;
 }
 
 
-////////////////////////////// Includes ///////////////////////////////////////
+//////////////////// Includes /////////////////////////////////////////////////
 
 #ifndef _WINSOCK2API_
 #pragma message("To avoid this message, please put winsock2.h in your pre compiled header (usually stdafx.h)")
@@ -67,7 +67,7 @@ __if_not_exists(SOCKADDR_INET)
 #endif //#ifndef CWSOCKET_MFC_EXTENSIONS
 
 
-////////////////////////////// Classes ////////////////////////////////////////
+//////////////////// Classes //////////////////////////////////////////////////
 
 #ifdef CWSOCKET_MFC_EXTENSIONS
 class SOCKMFC_EXT_CLASS CWSocketException : public CException
@@ -93,10 +93,10 @@ public:
 #endif //#ifdef CWSOCKET_MFC_EXTENSIONS
 
 #ifdef CWSOCKET_MFC_EXTENSIONS
-	CString GetErrorMessage();
+	_NODISCARD CString GetErrorMessage(); //NOLINT(clang-diagnostic-overloaded-virtual)
 #endif //#ifdef CWSOCKET_MFC_EXTENSIONS
 
-	//Data members
+//Data members
 	int m_nError;
 #pragma warning(suppress: 26495)
 };
@@ -112,12 +112,12 @@ public:
 
 	//Typedefs
 #ifdef CWSOCKET_MFC_EXTENSIONS
-	typedef CString String;
+	using String = CString;
 #else
 #ifdef _UNICODE
-	typedef std::wstring String;
+	using String = std::wstring;
 #else
-	typedef std::string String;
+	using String = std::string;
 #endif //#ifdef _UNICODE
 #endif //#ifdef CWSOCKET_MFC_EXTENSIONS
 
@@ -130,11 +130,11 @@ public:
 	void GetSockName(_Out_writes_bytes_to_(*pSockAddrLen, *pSockAddrLen) SOCKADDR* pSockAddr, _Inout_ int* pSockAddrLen);
 	void SetSockOpt(_In_ int nOptionName, _In_reads_bytes_opt_(nOptionLen) const void* pOptionValue, _In_ int nOptionLen, _In_ int nLevel = SOL_SOCKET);
 	void GetSockOpt(_In_ int nOptionName, _Out_writes_bytes_(*pOptionLen) void* pOptionValue, _Inout_ int* pOptionLen, _In_ int nLevel = SOL_SOCKET);
-	bool IsCreated() const noexcept;
-	bool IsReadible(_In_ DWORD dwTimeout);
-	bool IsWritable(_In_ DWORD dwTimeout);
+	_NODISCARD bool IsCreated() const noexcept;
+	_NODISCARD bool IsReadible(_In_ DWORD dwTimeout);
+	_NODISCARD bool IsWritable(_In_ DWORD dwTimeout);
 	void SetBindAddress(_In_ const String& sBindAddress) { m_sBindAddress = sBindAddress; };
-	String GetBindAddress() const { return m_sBindAddress; };
+	_NODISCARD String GetBindAddress() const { return m_sBindAddress; };
 
 	//Methods
 	CWSocket& operator=(_In_ const CWSocket&) = delete;
@@ -166,8 +166,8 @@ public:
 
 	//Static methods
 	static void ThrowWSocketException(_In_ int nError = 0);
-	static String AddressToString(_In_reads_bytes_(nSockAddrLen) const SOCKADDR* pSockAddr, _In_ int nSockAddrLen, _In_ int nFlags = 0, _Inout_opt_ UINT* pnSocketPort = nullptr);
-	static String AddressToString(_In_ const SOCKADDR_INET& sockAddr, _In_ int nFlags = 0, _Inout_opt_ UINT* pnSocketPort = nullptr);
+	_NODISCARD static String AddressToString(_In_reads_bytes_(nSockAddrLen) const SOCKADDR* pSockAddr, _In_ int nSockAddrLen, _In_ int nFlags = 0, _Inout_opt_ UINT* pnSocketPort = nullptr);
+	_NODISCARD static String AddressToString(_In_ const SOCKADDR_INET& sockAddr, _In_ int nFlags = 0, _Inout_opt_ UINT* pnSocketPort = nullptr);
 
 protected:
 	//Methods

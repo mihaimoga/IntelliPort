@@ -43,7 +43,7 @@ END_MESSAGE_MAP()
 CIntelliPortDoc::CIntelliPortDoc()
 {
 	VERIFY(m_fontTerminal.CreateFont(
-		-MulDiv(10, GetDeviceCaps(::GetDC(NULL), LOGPIXELSY), 72), // nHeight
+		-MulDiv(10, GetDeviceCaps(::GetDC(nullptr), LOGPIXELSY), 72), // nHeight
 		0,                         // nWidth
 		0,                         // nEscapement
 		0,                         // nOrientation
@@ -70,7 +70,7 @@ BOOL CIntelliPortDoc::OnNewDocument()
 		return FALSE;
 	if (!m_viewList.IsEmpty())
 	{
-		reinterpret_cast<CEditView*>(m_viewList.GetHead())->SetWindowText(NULL);
+		reinterpret_cast<CEditView*>(m_viewList.GetHead())->SetWindowText(nullptr);
 	}
 
 	// (SDI documents will reuse this document)
@@ -120,7 +120,7 @@ void CIntelliPortDoc::Serialize(CArchive& ar)
 	CMainFrame* pMainFrame = (CMainFrame*) AfxGetMainWnd();
 	ASSERT_VALID(pMainFrame);
 	strFormat.LoadString(ar.IsLoading() ? IDS_FILE_HAS_BEEN_LOADED : IDS_FILE_HAS_BEEN_SAVED);
-	strMessage.Format(strFormat, ar.m_strFileName);
+	strMessage.Format(strFormat, static_cast<LPCWSTR>(ar.m_strFileName));
 	pMainFrame->SetStatusBarText(strMessage);
 
 #ifdef SHARED_HANDLERS

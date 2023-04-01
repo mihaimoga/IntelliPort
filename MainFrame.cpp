@@ -63,12 +63,12 @@ CMainFrame::CMainFrame()
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_OFF_2007_AQUA);
 	m_pCurrentDateTime = CTime::GetCurrentTime();
 	m_pRingBuffer.Create(0x10000);
-	m_nThreadRunning = FALSE;
+	m_nThreadRunning = false;
 }
 
 CMainFrame::~CMainFrame()
 {
-	m_nThreadRunning = FALSE;
+	m_nThreadRunning = false;
 	::Sleep(1000);
 	m_pSerialPort.Close();
 	m_pSocket.Close();
@@ -80,8 +80,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
-	BOOL bNameValid;
 
 	// set the visual manager used to draw all user interface elements
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2007));
@@ -98,6 +96,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
+	bool bNameValid;
 	CString strTitlePane;
 	bNameValid = strTitlePane.LoadString(IDS_STATUS_PANE1);
 	ASSERT(bNameValid);
@@ -136,15 +135,15 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	return TRUE;
 }
 
-BOOL CMainFrame::CreateCaptionBar()
+bool CMainFrame::CreateCaptionBar()
 {
 	if (!m_wndCaptionBar.Create(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS, this, ID_VIEW_CAPTION_BAR, -1, TRUE))
 	{
 		TRACE0("Failed to create caption bar\n");
-		return FALSE;
+		return false;
 	}
 
-	BOOL bNameValid;
+	bool bNameValid;
 	CString strTemp, strTemp2;
 	/*bNameValid = strTemp.LoadString(IDS_CAPTION_BUTTON);
 	ASSERT(bNameValid);
@@ -165,7 +164,7 @@ BOOL CMainFrame::CreateCaptionBar()
 	m_wndCaptionBar.SetImageToolTip(strTemp, strTemp2);
 
 	HideMessageBar();
-	return TRUE;
+	return true;
 }
 
 void CMainFrame::OnDestroy()
@@ -204,21 +203,21 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 	CFrameWndEx::OnTimer(nIDEvent);
 }
 
-BOOL CMainFrame::SetStatusBarText(CString strMessage)
+bool CMainFrame::SetStatusBarText(const CString& strMessage)
 {
-	if (m_wndStatusBar.GetSafeHwnd() != NULL)
+	if (m_wndStatusBar.GetSafeHwnd() != nullptr)
 	{
 		m_wndStatusBar.GetElement(0)->SetText(strMessage);
 		m_wndStatusBar.Invalidate();
 		m_wndStatusBar.UpdateWindow();
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
-BOOL CMainFrame::SetCaptionBarText(CString strMessage)
+bool CMainFrame::SetCaptionBarText(const CString& strMessage)
 {
-	if (m_wndCaptionBar.GetSafeHwnd() != NULL)
+	if (m_wndCaptionBar.GetSafeHwnd() != nullptr)
 	{
 		m_pCurrentDateTime = CTime::GetCurrentTime();
 		m_wndCaptionBar.ShowWindow(SW_SHOW);
@@ -227,26 +226,26 @@ BOOL CMainFrame::SetCaptionBarText(CString strMessage)
 		m_wndCaptionBar.UpdateWindow();
 		RecalcLayout();
 	}
-	return FALSE;
+	return false;
 }
 
-BOOL CMainFrame::HideMessageBar()
+bool CMainFrame::HideMessageBar()
 {
-	if (m_wndCaptionBar.GetSafeHwnd() != NULL)
+	if (m_wndCaptionBar.GetSafeHwnd() != nullptr)
 	{
 		m_wndCaptionBar.ShowWindow(SW_HIDE);
 		m_wndCaptionBar.Invalidate();
 		m_wndCaptionBar.UpdateWindow();
 		RecalcLayout();
 	}
-	return TRUE;
+	return true;
 }
 
 #define CRLF _T("\r\n")
 #define CR _T("\r")
 #define LF _T("\n")
 
-BOOL CMainFrame::AddText(CString strText)
+bool CMainFrame::AddText(CString strText)
 {
 	strText.Replace(CRLF, LF);
 	strText.Replace(CR, LF);
@@ -257,7 +256,7 @@ BOOL CMainFrame::AddText(CString strText)
 	pEdit.ReplaceSel(strText, TRUE);
 	pEdit.SetSel(-1, 0);
 
-	return FALSE;
+	return false;
 }
 
 // CMainFrame diagnostics
@@ -333,7 +332,7 @@ void CMainFrame::OnOpenSerialPort()
 		case 0:
 		{
 			CString strFullPortName;
-			strFullPortName.Format(_T("\\\\.\\%s"), theApp.m_strSerialName);
+			strFullPortName.Format(_T("\\\\.\\%s"), static_cast<LPCWSTR>(theApp.m_strSerialName));
 			m_pSerialPort.Open(
 				strFullPortName,
 				theApp.m_nBaudRate,
@@ -345,10 +344,10 @@ void CMainFrame::OnOpenSerialPort()
 
 			if (m_pSerialPort.IsOpen())
 			{
-				m_nThreadRunning = TRUE;
+				m_nThreadRunning = true;
 				AfxBeginThread(SerialPortThreadFunc, this);
 				strFormat.LoadString(IDS_SERIAL_PORT_OPENED);
-				strMessage.Format(strFormat, theApp.m_strSerialName);
+				strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -392,10 +391,10 @@ void CMainFrame::OnOpenSerialPort()
 
 			if (m_pSocket.IsCreated())
 			{
-				m_nThreadRunning = TRUE;
+				m_nThreadRunning = true;
 				AfxBeginThread(SocketThreadFunc, this);
 				strFormat.LoadString(IDS_SOCKET_CREATED);
-				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), strServerIP, nServerPort);
+				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -406,7 +405,7 @@ void CMainFrame::OnOpenSerialPort()
 void CMainFrame::OnCloseSerialPort()
 {
 	CString strFormat, strMessage;
-	m_nThreadRunning = FALSE;
+	m_nThreadRunning = false;
 	::Sleep(1000);
 	switch (theApp.m_nConnection)
 	{
@@ -417,7 +416,7 @@ void CMainFrame::OnCloseSerialPort()
 			if (!m_pSerialPort.IsOpen())
 			{
 				strFormat.LoadString(IDS_SERIAL_PORT_CLOSED);
-				strMessage.Format(strFormat, theApp.m_strSerialName);
+				strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -451,7 +450,7 @@ void CMainFrame::OnCloseSerialPort()
 				}
 
 				strFormat.LoadString(IDS_SOCKET_CLOSED);
-				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), strServerIP, nServerPort);
+				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
 				SetCaptionBarText(strMessage);
 			}
 			break;
@@ -579,8 +578,8 @@ UINT SocketThreadFunc(LPVOID pParam)
 	CWSocket& pSocket = pMainFrame->m_pSocket;
 	CWSocket& pIncomming = pMainFrame->m_pIncomming;
 	std::mutex& pMutualAccess = pMainFrame->m_pMutualAccess;
-	BOOL bIsTCP = (theApp.m_nConnection == 1);
-	BOOL bIsClient = (theApp.m_nSocketType == 1);
+	bool bIsTCP = (theApp.m_nConnection == 1);
+	bool bIsClient = (theApp.m_nSocketType == 1);
 
 	CString strServerIP = theApp.m_strServerIP;
 	UINT nServerPort = theApp.m_nServerPort;

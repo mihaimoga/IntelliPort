@@ -26,7 +26,7 @@ CInputDlg::CInputDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CInputDlg::IDD, pParent)
 {
 	VERIFY(m_fontTerminal.CreateFont(
-		-MulDiv(10, GetDeviceCaps(::GetDC(NULL), LOGPIXELSY), 72), // nHeight
+		-MulDiv(10, GetDeviceCaps(::GetDC(nullptr), LOGPIXELSY), 72), // nHeight
 		0,                         // nWidth
 		0,                         // nEscapement
 		0,                         // nOrientation

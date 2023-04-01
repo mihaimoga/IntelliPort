@@ -115,8 +115,8 @@ public:
 	//
 	CRingBuffer()
 	{
-		m_pBuf = NULL;
-		m_pTmpBuf = NULL;
+		m_pBuf = nullptr;
+		m_pTmpBuf = nullptr;
 		m_nBufSize = 0;
 		m_iReadPtr = 0;
 		m_iWritePtr = 0;
@@ -173,8 +173,8 @@ public:
 		if( m_pTmpBuf )
 			delete m_pTmpBuf;
 
-		m_pBuf = NULL;
-		m_pTmpBuf = NULL;
+		m_pBuf = nullptr;
+		m_pTmpBuf = nullptr;
 		m_nBufSize = 0;
 		m_iReadPtr = 0;
 		m_iWritePtr = 0;

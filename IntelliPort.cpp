@@ -249,7 +249,7 @@ BOOL CAboutDlg::OnInitDialog()
 	// logfont.lfQuality = ANTIALIASED_QUALITY;
 	logfont.lfOutPrecision = OUT_TT_PRECIS;
 	logfont.lfWeight = FW_NORMAL;
-	logfont.lfHeight = -MulDiv(6, GetDeviceCaps(::GetDC(NULL), LOGPIXELSY), 72);;
+	logfont.lfHeight = -MulDiv(6, GetDeviceCaps(::GetDC(nullptr), LOGPIXELSY), 72);;
 	_tcscpy_s(logfont.lfFaceName, LF_FACESIZE, _T("Tahoma"));
 	VERIFY(m_fontCourier.CreateFontIndirect(&logfont));
 

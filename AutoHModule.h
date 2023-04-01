@@ -31,7 +31,7 @@ class CAutoHModule
 {
 public:
 	//Constructors / Destructors
-	CAutoHModule() : m_hModule(NULL), 
+	CAutoHModule() : m_hModule(nullptr),
 		m_dwError(ERROR_SUCCESS)
 	{
 	}
@@ -48,10 +48,10 @@ public:
 
 	~CAutoHModule()
 	{
-		if (m_hModule != NULL)
+		if (m_hModule != nullptr)
 		{
 			FreeLibrary(m_hModule);
-			m_hModule = NULL;
+			m_hModule = nullptr;
 		}
 		SetLastError(m_dwError);
 	}
