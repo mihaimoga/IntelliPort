@@ -326,198 +326,282 @@ void CMainFrame::OnConfigureSerialPort()
 
 void CMainFrame::OnOpenSerialPort()
 {
-	CString strFormat, strMessage;
-	switch (theApp.m_nConnection)
+	try
 	{
-		case 0:
-		{
-			CString strFullPortName;
-			strFullPortName.Format(_T("\\\\.\\%s"), static_cast<LPCWSTR>(theApp.m_strSerialName));
-			m_pSerialPort.Open(
-				strFullPortName,
-				theApp.m_nBaudRate,
-				(CSerialPort::Parity) theApp.m_nParity,
-				(BYTE) theApp.m_nDataBits,
-				(CSerialPort::StopBits) theApp.m_nStopBits,
-				(CSerialPort::FlowControl) theApp.m_nFlowControl,
-				FALSE);
-
-			if (m_pSerialPort.IsOpen())
-			{
-				m_nThreadRunning = true;
-				AfxBeginThread(SerialPortThreadFunc, this);
-				strFormat.LoadString(IDS_SERIAL_PORT_OPENED);
-				strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
-				SetCaptionBarText(strMessage);
-			}
-			break;
-		}
-		case 1:
-		case 2:
-		{
-			CString strServerIP = theApp.m_strServerIP;
-			UINT nServerPort = theApp.m_nServerPort;
-			CString strClientIP = theApp.m_strClientIP;
-			UINT nClientPort = theApp.m_nClientPort;
-
-			if (theApp.m_nConnection == 1) // TCP Socket
-			{
-				if (theApp.m_nSocketType == 1) // Client
-				{
-					m_pSocket.CreateAndConnect(strServerIP, nServerPort);
-				}
-				else // TCP Server
-				{
-					m_pSocket.SetBindAddress(strClientIP);
-					m_pSocket.CreateAndBind(nClientPort, SOCK_STREAM, AF_INET);
-
-					m_dlgIncoming.ShowWindow(SW_SHOW);
-					m_dlgIncoming.CenterWindow(this);
-					m_dlgIncoming.Invalidate();
-					m_dlgIncoming.UpdateWindow();
-					m_pSocket.Listen();
-					m_pSocket.Accept(m_pIncomming);
-					m_dlgIncoming.ShowWindow(SW_HIDE);
-				}
-			}
-			else // UDP Socket
-			{
-				m_pSocket.SetBindAddress(strClientIP);
-				m_pSocket.CreateAndBind(nClientPort, SOCK_DGRAM, AF_INET);
-
-				strServerIP = strClientIP;
-				nServerPort = nClientPort;
-			}
-
-			if (m_pSocket.IsCreated())
-			{
-				m_nThreadRunning = true;
-				AfxBeginThread(SocketThreadFunc, this);
-				strFormat.LoadString(IDS_SOCKET_CREATED);
-				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
-				SetCaptionBarText(strMessage);
-			}
-			break;
-		}
-	}
-}
-
-void CMainFrame::OnCloseSerialPort()
-{
-	CString strFormat, strMessage;
-	m_nThreadRunning = false;
-	::Sleep(1000);
-	switch (theApp.m_nConnection)
-	{
-		case 0:
-		{
-			m_pSerialPort.Close();
-
-			if (!m_pSerialPort.IsOpen())
-			{
-				strFormat.LoadString(IDS_SERIAL_PORT_CLOSED);
-				strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
-				SetCaptionBarText(strMessage);
-			}
-			break;
-		}
-		case 1:
-		case 2:
-		{
-			CString strServerIP = theApp.m_strServerIP;
-			UINT nServerPort = theApp.m_nServerPort;
-			CString strClientIP = theApp.m_strClientIP;
-			UINT nClientPort = theApp.m_nClientPort;
-
-			m_pSocket.Close();
-			m_pIncomming.Close();
-
-			if (!m_pSocket.IsCreated())
-			{
-				if (theApp.m_nConnection == 1) // TCP Socket
-				{
-					if (theApp.m_nSocketType == 1) // Client
-					{
-					}
-					else // TCP Server
-					{
-					}
-				}
-				else // UDP Socket
-				{
-					strServerIP = strClientIP;
-					nServerPort = nClientPort;
-				}
-
-				strFormat.LoadString(IDS_SOCKET_CLOSED);
-				strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
-				SetCaptionBarText(strMessage);
-			}
-			break;
-		}
-	}
-}
-
-void CMainFrame::OnSendReceive()
-{
-	CInputDlg dlgInput(this);
-	if (dlgInput.DoModal() == IDOK)
-	{
-		CStringA pBuffer(dlgInput.m_strSendData);
-		const int nLength = pBuffer.GetLength();
-
+		CString strFormat, strMessage;
 		switch (theApp.m_nConnection)
 		{
 			case 0:
 			{
-				m_pMutualAccess.lock();
-				m_pSerialPort.Write(pBuffer.GetBufferSetLength(nLength), nLength);
-				m_pMutualAccess.unlock();
-				pBuffer.ReleaseBuffer();
+				CString strFullPortName;
+				strFullPortName.Format(_T("\\\\.\\%s"), static_cast<LPCWSTR>(theApp.m_strSerialName));
+				m_pSerialPort.Open(
+					strFullPortName,
+					theApp.m_nBaudRate,
+					(CSerialPort::Parity) theApp.m_nParity,
+					(BYTE)theApp.m_nDataBits,
+					(CSerialPort::StopBits) theApp.m_nStopBits,
+					(CSerialPort::FlowControl) theApp.m_nFlowControl,
+					FALSE);
+
+				if (m_pSerialPort.IsOpen())
+				{
+					m_nThreadRunning = true;
+					AfxBeginThread(SerialPortThreadFunc, this);
+					strFormat.LoadString(IDS_SERIAL_PORT_OPENED);
+					strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
+					SetCaptionBarText(strMessage);
+				}
 				break;
 			}
 			case 1:
 			case 2:
 			{
 				CString strServerIP = theApp.m_strServerIP;
-				const UINT nServerPort = theApp.m_nServerPort;
+				UINT nServerPort = theApp.m_nServerPort;
+				CString strClientIP = theApp.m_strClientIP;
+				UINT nClientPort = theApp.m_nClientPort;
 
 				if (theApp.m_nConnection == 1) // TCP Socket
 				{
 					if (theApp.m_nSocketType == 1) // Client
 					{
-						if (m_pSocket.IsWritable(1000))
-						{
-							m_pMutualAccess.lock();
-							m_pSocket.Send(pBuffer.GetBufferSetLength(nLength), nLength, 0);
-							pBuffer.ReleaseBuffer();
-							m_pMutualAccess.unlock();
-						}
+						m_pSocket.CreateAndConnect(strServerIP, nServerPort);
 					}
-					else
+					else // TCP Server
 					{
-						if (m_pIncomming.IsWritable(1000))
-						{
-							m_pMutualAccess.lock();
-							m_pIncomming.Send(pBuffer.GetBufferSetLength(nLength), nLength, 0);
-							pBuffer.ReleaseBuffer();
-							m_pMutualAccess.unlock();
-						}
+						m_pSocket.SetBindAddress(strClientIP);
+						m_pSocket.CreateAndBind(nClientPort, SOCK_STREAM, AF_INET);
+
+						m_dlgIncoming.ShowWindow(SW_SHOW);
+						m_dlgIncoming.CenterWindow(this);
+						m_dlgIncoming.Invalidate();
+						m_dlgIncoming.UpdateWindow();
+						m_pSocket.Listen();
+						m_pSocket.Accept(m_pIncomming);
+						m_dlgIncoming.ShowWindow(SW_HIDE);
 					}
 				}
-				else
+				else // UDP Socket
 				{
-					if (m_pSocket.IsWritable(1000))
-					{
-						m_pMutualAccess.lock();
-						m_pSocket.SendTo(pBuffer.GetBufferSetLength(nLength), nLength, nServerPort, strServerIP, 0);
-						pBuffer.ReleaseBuffer();
-						m_pMutualAccess.unlock();
-					}
+					m_pSocket.SetBindAddress(strClientIP);
+					m_pSocket.CreateAndBind(nClientPort, SOCK_DGRAM, AF_INET);
+
+					strServerIP = strClientIP;
+					nServerPort = nClientPort;
+				}
+
+				if (m_pSocket.IsCreated())
+				{
+					m_nThreadRunning = true;
+					AfxBeginThread(SocketThreadFunc, this);
+					strFormat.LoadString(IDS_SOCKET_CREATED);
+					strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
+					SetCaptionBarText(strMessage);
 				}
 				break;
 			}
 		}
+	}
+	catch (CSerialException& pException)
+	{
+		const int nErrorLength = 0x100;
+		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+		pException.GetErrorMessage2(lpszErrorMessage, nErrorLength);
+		TRACE(_T("%s\n"), lpszErrorMessage);
+		// pException->Delete();
+		SetCaptionBarText(lpszErrorMessage);
+		m_nThreadRunning = false;
+		::Sleep(1000);
+		m_pSerialPort.Close();
+	}
+	catch (CWSocketException* pException)
+	{
+		const int nErrorLength = 0x100;
+		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+		pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
+		TRACE(_T("%s\n"), lpszErrorMessage);
+		pException->Delete();
+		SetCaptionBarText(lpszErrorMessage);
+		m_nThreadRunning = false;
+		::Sleep(1000);
+		m_pIncomming.Close();
+		m_pSocket.Close();
+	}
+}
+
+void CMainFrame::OnCloseSerialPort()
+{
+	try
+	{
+		CString strFormat, strMessage;
+		m_nThreadRunning = false;
+		::Sleep(1000);
+		switch (theApp.m_nConnection)
+		{
+			case 0:
+			{
+				m_pSerialPort.Close();
+
+				if (!m_pSerialPort.IsOpen())
+				{
+					strFormat.LoadString(IDS_SERIAL_PORT_CLOSED);
+					strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
+					SetCaptionBarText(strMessage);
+				}
+				break;
+			}
+			case 1:
+			case 2:
+			{
+				CString strServerIP = theApp.m_strServerIP;
+				UINT nServerPort = theApp.m_nServerPort;
+				CString strClientIP = theApp.m_strClientIP;
+				UINT nClientPort = theApp.m_nClientPort;
+
+				m_pSocket.Close();
+				m_pIncomming.Close();
+
+				if (!m_pSocket.IsCreated())
+				{
+					if (theApp.m_nConnection == 1) // TCP Socket
+					{
+						if (theApp.m_nSocketType == 1) // Client
+						{
+						}
+						else // TCP Server
+						{
+						}
+					}
+					else // UDP Socket
+					{
+						strServerIP = strClientIP;
+						nServerPort = nClientPort;
+					}
+
+					strFormat.LoadString(IDS_SOCKET_CLOSED);
+					strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
+					SetCaptionBarText(strMessage);
+				}
+				break;
+			}
+		}
+	}
+	catch (CSerialException& pException)
+	{
+		const int nErrorLength = 0x100;
+		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+		pException.GetErrorMessage2(lpszErrorMessage, nErrorLength);
+		TRACE(_T("%s\n"), lpszErrorMessage);
+		// pException->Delete();
+		SetCaptionBarText(lpszErrorMessage);
+		m_nThreadRunning = false;
+		::Sleep(1000);
+		m_pSerialPort.Close();
+	}
+	catch (CWSocketException* pException)
+	{
+		const int nErrorLength = 0x100;
+		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+		pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
+		TRACE(_T("%s\n"), lpszErrorMessage);
+		pException->Delete();
+		SetCaptionBarText(lpszErrorMessage);
+		m_nThreadRunning = false;
+		::Sleep(1000);
+		m_pIncomming.Close();
+		m_pSocket.Close();
+	}
+}
+
+void CMainFrame::OnSendReceive()
+{
+	try
+	{
+		CInputDlg dlgInput(this);
+		if (dlgInput.DoModal() == IDOK)
+		{
+			CStringA pBuffer(dlgInput.m_strSendData);
+			const int nLength = pBuffer.GetLength();
+
+			switch (theApp.m_nConnection)
+			{
+				case 0:
+				{
+					m_pMutualAccess.lock();
+					m_pSerialPort.Write(pBuffer.GetBufferSetLength(nLength), nLength);
+					m_pMutualAccess.unlock();
+					pBuffer.ReleaseBuffer();
+					break;
+				}
+				case 1:
+				case 2:
+				{
+					CString strServerIP = theApp.m_strServerIP;
+					const UINT nServerPort = theApp.m_nServerPort;
+
+					if (theApp.m_nConnection == 1) // TCP Socket
+					{
+						if (theApp.m_nSocketType == 1) // Client
+						{
+							if (m_pSocket.IsWritable(1000))
+							{
+								m_pMutualAccess.lock();
+								m_pSocket.Send(pBuffer.GetBufferSetLength(nLength), nLength, 0);
+								pBuffer.ReleaseBuffer();
+								m_pMutualAccess.unlock();
+							}
+						}
+						else
+						{
+							if (m_pIncomming.IsWritable(1000))
+							{
+								m_pMutualAccess.lock();
+								m_pIncomming.Send(pBuffer.GetBufferSetLength(nLength), nLength, 0);
+								pBuffer.ReleaseBuffer();
+								m_pMutualAccess.unlock();
+							}
+						}
+					}
+					else
+					{
+						if (m_pSocket.IsWritable(1000))
+						{
+							m_pMutualAccess.lock();
+							m_pSocket.SendTo(pBuffer.GetBufferSetLength(nLength), nLength, nServerPort, strServerIP, 0);
+							pBuffer.ReleaseBuffer();
+							m_pMutualAccess.unlock();
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+	catch (CSerialException& pException)
+	{
+		const int nErrorLength = 0x100;
+		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+		pException.GetErrorMessage2(lpszErrorMessage, nErrorLength);
+		TRACE(_T("%s\n"), lpszErrorMessage);
+		// pException->Delete();
+		SetCaptionBarText(lpszErrorMessage);
+		m_nThreadRunning = false;
+		::Sleep(1000);
+		m_pSerialPort.Close();
+	}
+	catch (CWSocketException* pException)
+	{
+		const int nErrorLength = 0x100;
+		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+		pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
+		TRACE(_T("%s\n"), lpszErrorMessage);
+		pException->Delete();
+		SetCaptionBarText(lpszErrorMessage);
+		m_nThreadRunning = false;
+		::Sleep(1000);
+		m_pIncomming.Close();
+		m_pSocket.Close();
 	}
 }
 
@@ -552,19 +636,33 @@ UINT SerialPortThreadFunc(LPVOID pParam)
 
 	while (pMainFrame->m_nThreadRunning)
 	{
-		memset(&status, 0, sizeof(status));
-		pSerialPort.GetStatus(status);
-		if (status.cbInQue > 0)
+		try
 		{
-			memset(pBuffer, 0, sizeof(pBuffer));
-			const int nLength = pSerialPort.Read(pBuffer, sizeof(pBuffer));
-			pMutualAccess.lock();
-			pRingBuffer.WriteBinary(pBuffer, nLength);
-			pMutualAccess.unlock();
+			memset(&status, 0, sizeof(status));
+			pSerialPort.GetStatus(status);
+			if (status.cbInQue > 0)
+			{
+				memset(pBuffer, 0, sizeof(pBuffer));
+				const int nLength = pSerialPort.Read(pBuffer, sizeof(pBuffer));
+				pMutualAccess.lock();
+				pRingBuffer.WriteBinary(pBuffer, nLength);
+				pMutualAccess.unlock();
+			}
+			else
+			{
+				::Sleep(10);
+			}
 		}
-		else
+		catch (CSerialException& pException)
 		{
-			::Sleep(10);
+			const int nErrorLength = 0x100;
+			TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+			pException.GetErrorMessage2(lpszErrorMessage, nErrorLength);
+			TRACE(_T("%s\n"), lpszErrorMessage);
+			// pException->Delete();
+			pMainFrame->SetCaptionBarText(lpszErrorMessage);
+			pMainFrame->m_nThreadRunning = false;
+			pSerialPort.Close();
 		}
 	}
 	return 0;
@@ -586,29 +684,47 @@ UINT SocketThreadFunc(LPVOID pParam)
 
 	while (pMainFrame->m_nThreadRunning)
 	{
-		if (bIsTCP)
+		try
 		{
-			if (bIsClient)
+			if (bIsTCP)
 			{
-				if (pSocket.IsReadible(1000))
+				if (bIsClient)
 				{
-					memset(pBuffer, 0, sizeof(pBuffer));
-					const int nLength = pSocket.Receive(pBuffer, sizeof(pBuffer), 0);
-					pMutualAccess.lock();
-					pRingBuffer.WriteBinary(pBuffer, nLength);
-					pMutualAccess.unlock();
+					if (pSocket.IsReadible(1000))
+					{
+						memset(pBuffer, 0, sizeof(pBuffer));
+						const int nLength = pSocket.Receive(pBuffer, sizeof(pBuffer), 0);
+						pMutualAccess.lock();
+						pRingBuffer.WriteBinary(pBuffer, nLength);
+						pMutualAccess.unlock();
+					}
+					else
+					{
+						::Sleep(10);
+					}
 				}
 				else
 				{
-					::Sleep(10);
+					if (pIncomming.IsReadible(1000))
+					{
+						memset(pBuffer, 0, sizeof(pBuffer));
+						const int nLength = pIncomming.Receive(pBuffer, sizeof(pBuffer), 0);
+						pMutualAccess.lock();
+						pRingBuffer.WriteBinary(pBuffer, nLength);
+						pMutualAccess.unlock();
+					}
+					else
+					{
+						::Sleep(10);
+					}
 				}
 			}
 			else
 			{
-				if (pIncomming.IsReadible(1000))
+				if (pSocket.IsReadible(1000))
 				{
 					memset(pBuffer, 0, sizeof(pBuffer));
-					const int nLength = pIncomming.Receive(pBuffer, sizeof(pBuffer), 0);
+					const int nLength = pSocket.ReceiveFrom(pBuffer, sizeof(pBuffer), strServerIP, nServerPort, 0);
 					pMutualAccess.lock();
 					pRingBuffer.WriteBinary(pBuffer, nLength);
 					pMutualAccess.unlock();
@@ -619,20 +735,17 @@ UINT SocketThreadFunc(LPVOID pParam)
 				}
 			}
 		}
-		else
+		catch (CWSocketException* pException)
 		{
-			if (pSocket.IsReadible(1000))
-			{
-				memset(pBuffer, 0, sizeof(pBuffer));
-				const int nLength = pSocket.ReceiveFrom(pBuffer, sizeof(pBuffer), strServerIP, nServerPort, 0);
-				pMutualAccess.lock();
-				pRingBuffer.WriteBinary(pBuffer, nLength);
-				pMutualAccess.unlock();
-			}
-			else
-			{
-				::Sleep(10);
-			}
+			const int nErrorLength = 0x100;
+			TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+			pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
+			TRACE(_T("%s\n"), lpszErrorMessage);
+			pException->Delete();
+			pMainFrame->SetCaptionBarText(lpszErrorMessage);
+			pMainFrame->m_nThreadRunning = false;
+			pIncomming.Close();
+			pSocket.Close();
 		}
 	}
 	return 0;
