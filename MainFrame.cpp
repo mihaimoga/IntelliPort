@@ -64,15 +64,13 @@ CMainFrame::CMainFrame()
 	m_pCurrentDateTime = CTime::GetCurrentTime();
 	m_pRingBuffer.Create(0x10000);
 	m_nThreadRunning = false;
+	m_hSerialPortThread = nullptr;
+	m_hSocketThread = nullptr;
 }
 
 CMainFrame::~CMainFrame()
 {
-	m_nThreadRunning = false;
-	::Sleep(1000);
-	m_pSerialPort.Close();
-	m_pSocket.Close();
-	m_pIncomming.Close();
+	OnCloseSerialPort();
 	m_pRingBuffer.Destroy();
 }
 
@@ -145,17 +143,6 @@ bool CMainFrame::CreateCaptionBar()
 
 	bool bNameValid;
 	CString strTemp, strTemp2;
-	/*bNameValid = strTemp.LoadString(IDS_CAPTION_BUTTON);
-	ASSERT(bNameValid);
-	m_wndCaptionBar.SetButton(strTemp, ID_TOOLS_OPTIONS, CMFCCaptionBar::ALIGN_LEFT, FALSE);
-	bNameValid = strTemp.LoadString(IDS_CAPTION_BUTTON_TIP);
-	ASSERT(bNameValid);
-	m_wndCaptionBar.SetButtonToolTip(strTemp);
-
-	bNameValid = strTemp.LoadString(IDS_CAPTION_TEXT);
-	ASSERT(bNameValid);
-	m_wndCaptionBar.SetText(strTemp, CMFCCaptionBar::ALIGN_LEFT);*/
-
 	m_wndCaptionBar.SetBitmap(IDB_INFO, RGB(255, 255, 255), FALSE, CMFCCaptionBar::ALIGN_LEFT);
 	bNameValid = strTemp.LoadString(IDS_CAPTION_IMAGE_TIP);
 	ASSERT(bNameValid);
@@ -347,7 +334,7 @@ void CMainFrame::OnOpenSerialPort()
 				if (m_pSerialPort.IsOpen())
 				{
 					m_nThreadRunning = true;
-					AfxBeginThread(SerialPortThreadFunc, this);
+					m_hSerialPortThread = CreateThread(nullptr, 0, SerialPortThreadFunc, this, 0, &m_nSerialPortThreadID);
 					strFormat.LoadString(IDS_SERIAL_PORT_OPENED);
 					strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
 					SetCaptionBarText(strMessage);
@@ -394,7 +381,7 @@ void CMainFrame::OnOpenSerialPort()
 				if (m_pSocket.IsCreated())
 				{
 					m_nThreadRunning = true;
-					AfxBeginThread(SocketThreadFunc, this);
+					m_hSocketThread = CreateThread(nullptr, 0, SocketThreadFunc, this, 0, &m_nSocketTreadID);
 					strFormat.LoadString(IDS_SOCKET_CREATED);
 					strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
 					SetCaptionBarText(strMessage);
@@ -412,8 +399,6 @@ void CMainFrame::OnOpenSerialPort()
 		// pException->Delete();
 		SetCaptionBarText(lpszErrorMessage);
 		m_nThreadRunning = false;
-		::Sleep(1000);
-		m_pSerialPort.Close();
 	}
 	catch (CWSocketException* pException)
 	{
@@ -424,25 +409,37 @@ void CMainFrame::OnOpenSerialPort()
 		pException->Delete();
 		SetCaptionBarText(lpszErrorMessage);
 		m_nThreadRunning = false;
-		::Sleep(1000);
-		m_pIncomming.Close();
-		m_pSocket.Close();
 	}
 }
 
 void CMainFrame::OnCloseSerialPort()
 {
+	if (m_nThreadRunning)
+	{
+		m_nThreadRunning = false;
+		DWORD nThreadCount = 0;
+		HANDLE hThreadArray[2] = { 0, 0 };
+		if (m_hSerialPortThread != nullptr)
+		{
+			hThreadArray[nThreadCount++] = m_hSerialPortThread;
+		}
+		if (m_hSocketThread != nullptr)
+		{
+			hThreadArray[nThreadCount++] = m_hSocketThread;
+		}
+		if (nThreadCount > 0)
+		{
+			WaitForMultipleObjects(nThreadCount, hThreadArray, TRUE, INFINITE);
+		}
+	}
+
 	try
 	{
 		CString strFormat, strMessage;
-		m_nThreadRunning = false;
-		::Sleep(1000);
 		switch (theApp.m_nConnection)
 		{
 			case 0:
 			{
-				m_pSerialPort.Close();
-
 				if (!m_pSerialPort.IsOpen())
 				{
 					strFormat.LoadString(IDS_SERIAL_PORT_CLOSED);
@@ -458,9 +455,6 @@ void CMainFrame::OnCloseSerialPort()
 				UINT nServerPort = theApp.m_nServerPort;
 				CString strClientIP = theApp.m_strClientIP;
 				UINT nClientPort = theApp.m_nClientPort;
-
-				m_pSocket.Close();
-				m_pIncomming.Close();
 
 				if (!m_pSocket.IsCreated())
 				{
@@ -496,8 +490,6 @@ void CMainFrame::OnCloseSerialPort()
 		// pException->Delete();
 		SetCaptionBarText(lpszErrorMessage);
 		m_nThreadRunning = false;
-		::Sleep(1000);
-		m_pSerialPort.Close();
 	}
 	catch (CWSocketException* pException)
 	{
@@ -508,9 +500,6 @@ void CMainFrame::OnCloseSerialPort()
 		pException->Delete();
 		SetCaptionBarText(lpszErrorMessage);
 		m_nThreadRunning = false;
-		::Sleep(1000);
-		m_pIncomming.Close();
-		m_pSocket.Close();
 	}
 }
 
@@ -587,8 +576,6 @@ void CMainFrame::OnSendReceive()
 		// pException->Delete();
 		SetCaptionBarText(lpszErrorMessage);
 		m_nThreadRunning = false;
-		::Sleep(1000);
-		m_pSerialPort.Close();
 	}
 	catch (CWSocketException* pException)
 	{
@@ -599,9 +586,6 @@ void CMainFrame::OnSendReceive()
 		pException->Delete();
 		SetCaptionBarText(lpszErrorMessage);
 		m_nThreadRunning = false;
-		::Sleep(1000);
-		m_pIncomming.Close();
-		m_pSocket.Close();
 	}
 }
 
@@ -625,7 +609,7 @@ void CMainFrame::OnUpdateSendReceive(CCmdUI* pCmdUI)
 	pCmdUI->Enable(m_pSerialPort.IsOpen() || m_pSocket.IsCreated());
 }
 
-UINT SerialPortThreadFunc(LPVOID pParam)
+DWORD WINAPI SerialPortThreadFunc(LPVOID pParam)
 {
 	COMSTAT status = { 0, };
 	char pBuffer[0x10000] = { 0, };
@@ -661,14 +645,16 @@ UINT SerialPortThreadFunc(LPVOID pParam)
 			TRACE(_T("%s\n"), lpszErrorMessage);
 			// pException->Delete();
 			pMainFrame->SetCaptionBarText(lpszErrorMessage);
-			pMainFrame->m_nThreadRunning = false;
-			pSerialPort.Close();
+			break;
 		}
 	}
+	pSerialPort.Close();
+	pMainFrame->m_nThreadRunning = false;
+	pMainFrame->m_hSerialPortThread = nullptr;
 	return 0;
 }
 
-UINT SocketThreadFunc(LPVOID pParam)
+DWORD WINAPI SocketThreadFunc(LPVOID pParam)
 {
 	char pBuffer[0x10000] = { 0, };
 	CMainFrame* pMainFrame = (CMainFrame*) pParam;
@@ -743,10 +729,12 @@ UINT SocketThreadFunc(LPVOID pParam)
 			TRACE(_T("%s\n"), lpszErrorMessage);
 			pException->Delete();
 			pMainFrame->SetCaptionBarText(lpszErrorMessage);
-			pMainFrame->m_nThreadRunning = false;
-			pIncomming.Close();
-			pSocket.Close();
+			break;
 		}
 	}
+	pIncomming.Close();
+	pSocket.Close();
+	pMainFrame->m_nThreadRunning = false;
+	pMainFrame->m_hSocketThread = nullptr;
 	return 0;
 }

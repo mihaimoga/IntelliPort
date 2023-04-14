@@ -69,6 +69,10 @@ public:
 	CTime m_pCurrentDateTime;
 	UINT_PTR m_nTimerID;
 	bool m_nThreadRunning;
+	HANDLE m_hSerialPortThread;
+	HANDLE m_hSocketThread;
+	DWORD m_nSerialPortThreadID;
+	DWORD m_nSocketTreadID;
 
 // Generated message map functions
 protected:
@@ -94,6 +98,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-static UINT SerialPortThreadFunc(LPVOID pParam);
+static DWORD WINAPI SerialPortThreadFunc(LPVOID pParam);
 
-static UINT SocketThreadFunc(LPVOID pParam);
+static DWORD WINAPI SocketThreadFunc(LPVOID pParam);
