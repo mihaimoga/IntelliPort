@@ -63,6 +63,7 @@ END_MESSAGE_MAP()
 // CConfigureDlg message handlers
 BOOL CConfigureDlg::OnInitDialog()
 {
+	CString nItemText;
 	CString strSerialPortName;
 	CDialogEx::OnInitDialog();
 
@@ -70,7 +71,14 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pConnection.AddString(_T("Serial Port"));
 	m_pConnection.AddString(_T("TCP Socket"));
 	m_pConnection.AddString(_T("UDP Socket"));
-	m_pConnection.SetCurSel(0);
+	if (theApp.m_nConnection != -1)
+	{
+		m_pConnection.SetCurSel(theApp.m_nConnection);
+	}
+	else
+	{
+		m_pConnection.SetCurSel(0);
+	}
 
 	if (CEnumerateSerial::UsingGetCommPorts(m_arrSerialPortNames))
 	{
@@ -80,7 +88,27 @@ BOOL CConfigureDlg::OnInitDialog()
 			strSerialPortName.Format(_T("COM%u"), m_arrSerialPortNames[nIndex]);
 			m_pSerialPortNames.AddString(strSerialPortName);
 		}
-		m_pSerialPortNames.SetCurSel(0);
+		bool bFound = false;
+		if (!theApp.m_strSerialName.IsEmpty())
+		{
+			for (int nIndex = 0; nIndex < m_arrSerialPortNames.size(); nIndex++)
+			{
+				m_pSerialPortNames.GetLBText(nIndex, nItemText);
+				if (theApp.m_strSerialName.Compare(nItemText) == 0)
+				{
+					bFound = true;
+					m_pSerialPortNames.SetCurSel(nIndex);
+					break;
+				}
+			}
+			if (!bFound)
+				m_pSerialPortNames.SetCurSel(0);
+
+		}
+		else
+		{
+			m_pSerialPortNames.SetCurSel(0);
+		}
 	}
 
 	m_pBaudRate.ResetContent();
@@ -98,12 +126,100 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pBaudRate.AddString(_T("115200"));
 	m_pBaudRate.AddString(_T("128000"));
 	m_pBaudRate.AddString(_T("256000"));
-	m_pBaudRate.SetCurSel(11);
+	switch (theApp.m_nBaudRate)
+	{
+		case CBR_110:
+		{
+			m_pBaudRate.SetCurSel(0);
+			break;
+		}
+		case CBR_300:
+		{
+			m_pBaudRate.SetCurSel(1);
+			break;
+		}
+		case CBR_600:
+		{
+			m_pBaudRate.SetCurSel(2);
+			break;
+		}
+		case CBR_1200:
+		{
+			m_pBaudRate.SetCurSel(3);
+			break;
+		}
+		case CBR_2400:
+		{
+			m_pBaudRate.SetCurSel(4);
+			break;
+		}
+		case CBR_4800:
+		{
+			m_pBaudRate.SetCurSel(5);
+			break;
+		}
+		case CBR_9600:
+		{
+			m_pBaudRate.SetCurSel(6);
+			break;
+		}
+		case CBR_14400:
+		{
+			m_pBaudRate.SetCurSel(7);
+			break;
+		}
+		case CBR_19200:
+		{
+			m_pBaudRate.SetCurSel(8);
+			break;
+		}
+		case CBR_38400:
+		{
+			m_pBaudRate.SetCurSel(9);
+			break;
+		}
+		case CBR_57600:
+		{
+			m_pBaudRate.SetCurSel(0);
+			break;
+		}
+		case CBR_115200:
+		{
+			m_pBaudRate.SetCurSel(11);
+			break;
+		}
+		case CBR_128000:
+		{
+			m_pBaudRate.SetCurSel(12);
+			break;
+		}
+		case CBR_256000:
+		{
+			m_pBaudRate.SetCurSel(13);
+			break;
+		}
+		default:
+			m_pBaudRate.SetCurSel(11);
+	}
 
 	m_pDataBits.ResetContent();
 	m_pDataBits.AddString(_T("7"));
 	m_pDataBits.AddString(_T("8"));
-	m_pDataBits.SetCurSel(1);
+	switch (theApp.m_nDataBits)
+	{
+		case 7:
+		{
+			m_pDataBits.SetCurSel(0);
+			break;
+		}
+		case 8:
+		{
+			m_pDataBits.SetCurSel(1);
+			break;
+		}
+		default:
+			m_pDataBits.SetCurSel(1);
+	}
 
 	m_pParity.ResetContent();
 	m_pParity.AddString(_T("None"));
@@ -111,13 +227,61 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pParity.AddString(_T("Even"));
 	m_pParity.AddString(_T("Mark"));
 	m_pParity.AddString(_T("Space"));
-	m_pParity.SetCurSel(0);
+	switch (theApp.m_nParity)
+	{
+		case (int)CSerialPort::Parity::NoParity:
+		{
+			m_pParity.SetCurSel(0);
+			break;
+		}
+		case (int)CSerialPort::Parity::OddParity:
+		{
+			m_pParity.SetCurSel(1);
+			break;
+		}
+		case (int)CSerialPort::Parity::EvenParity:
+		{
+			m_pParity.SetCurSel(2);
+			break;
+		}
+		case (int)CSerialPort::Parity::MarkParity:
+		{
+			m_pParity.SetCurSel(3);
+			break;
+		}
+		case (int)CSerialPort::Parity::SpaceParity:
+		{
+			m_pParity.SetCurSel(4);
+			break;
+		}
+		default:
+			m_pParity.SetCurSel(0);
+	}
 
 	m_pStopBits.ResetContent();
 	m_pStopBits.AddString(_T("1"));
 	m_pStopBits.AddString(_T("1.5"));
 	m_pStopBits.AddString(_T("2"));
-	m_pStopBits.SetCurSel(0);
+	switch (theApp.m_nStopBits)
+	{
+		case (int)CSerialPort::StopBits::OneStopBit:
+		{
+			m_pStopBits.SetCurSel(0);
+			break;
+		}
+		case (int)CSerialPort::StopBits::OnePointFiveStopBits:
+		{
+			m_pStopBits.SetCurSel(1);
+			break;
+		}
+		case (int)CSerialPort::StopBits::TwoStopBits:
+		{
+			m_pStopBits.SetCurSel(2);
+			break;
+		}
+		default:
+			m_pStopBits.SetCurSel(0);
+	}
 
 	m_pFlowControl.ResetContent();
 	m_pFlowControl.AddString(_T("None"));
@@ -126,14 +290,55 @@ BOOL CConfigureDlg::OnInitDialog()
 	m_pFlowControl.AddString(_T("DSR/RTS"));
 	m_pFlowControl.AddString(_T("DSR/DTR"));
 	m_pFlowControl.AddString(_T("Xon/Xoff"));
-	m_pFlowControl.SetCurSel(0);
+	switch (theApp.m_nFlowControl)
+	{
+		case (int)CSerialPort::FlowControl::NoFlowControl:
+		{
+			m_pFlowControl.SetCurSel(0);
+			break;
+		}
+		case (int)CSerialPort::FlowControl::CtsRtsFlowControl:
+		{
+			m_pFlowControl.SetCurSel(1);
+			break;
+		}
+		case (int)CSerialPort::FlowControl::CtsDtrFlowControl:
+		{
+			m_pFlowControl.SetCurSel(2);
+			break;
+		}
+		case (int)CSerialPort::FlowControl::DsrRtsFlowControl:
+		{
+			m_pFlowControl.SetCurSel(3);
+			break;
+		}
+		case (int)CSerialPort::FlowControl::DsrDtrFlowControl:
+		{
+			m_pFlowControl.SetCurSel(4);
+			break;
+		}
+		case (int)CSerialPort::FlowControl::XonXoffFlowControl:
+		{
+			m_pFlowControl.SetCurSel(5);
+			break;
+		}
+		default:
+			m_pFlowControl.SetCurSel(0);
+	}
 
 	m_pSocketType.ResetContent();
 	m_pSocketType.AddString(_T("Server"));
 	m_pSocketType.AddString(_T("Client"));
-	m_pSocketType.SetCurSel(0);
+	if (theApp.m_nSocketType != -1)
+	{
+		m_pSocketType.SetCurSel(theApp.m_nSocketType);
+	}
+	else
+	{
+		m_pSocketType.SetCurSel(0);
+	}
 
-	CString strServerIP = _T("127.0.0.1");
+	CString strServerIP = theApp.m_strServerIP;
 	const int nServer1 = strServerIP.Find(_T('.'), 0);
 	const int nServer2 = strServerIP.Find(_T('.'), nServer1 + 1);
 	const int nServer3 = strServerIP.Find(_T('.'), nServer2 + 1);
@@ -142,11 +347,12 @@ BOOL CConfigureDlg::OnInitDialog()
 		(BYTE) _tstoi(strServerIP.Mid(nServer2 + 1, nServer3 - nServer2)),
 		(BYTE) _tstoi(strServerIP.Mid(nServer3 + 1, strServerIP.GetLength() - nServer3)));
 
-	CString strServerPort = _T("8080");
+	CString strServerPort;
+	strServerPort.Format(_T("%d"), theApp.m_nServerPort);
 	m_pServerPort.SetWindowText(strServerPort);
 	m_pServerPort.SetLimitText(5);
 
-	CString strClientIP = _T("127.0.0.1");
+	CString strClientIP = theApp.m_strClientIP;
 	const int nClient1 = strClientIP.Find(_T('.'), 0);
 	const int nClient2 = strClientIP.Find(_T('.'), nClient1 + 1);
 	const int nClient3 = strClientIP.Find(_T('.'), nClient2 + 1);
@@ -155,7 +361,8 @@ BOOL CConfigureDlg::OnInitDialog()
 		(BYTE) _tstoi(strClientIP.Mid(nClient2 + 1, nClient3 - nClient2)),
 		(BYTE) _tstoi(strClientIP.Mid(nClient3 + 1, strClientIP.GetLength() - nClient3)));
 
-	CString strClientPort = _T("8080");
+	CString strClientPort;
+	strClientPort.Format(_T("%d"), theApp.m_nClientPort);
 	m_pClientPort.SetWindowText(strClientPort);
 	m_pClientPort.SetLimitText(5);
 

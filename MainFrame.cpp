@@ -66,6 +66,17 @@ CMainFrame::CMainFrame()
 	m_nThreadRunning = false;
 	m_hSerialPortThread = nullptr;
 	m_hSocketThread = nullptr;
+
+	theApp.m_nBaudRate = -1;
+	theApp.m_nDataBits = -1;
+	theApp.m_nParity = -1;
+	theApp.m_nStopBits = -1;
+	theApp.m_nFlowControl = -1;
+	theApp.m_nSocketType = -1;
+	theApp.m_strServerIP = _T("127.0.0.1");
+	theApp.m_nServerPort = 8080;
+	theApp.m_strClientIP = _T("127.0.0.1");
+	theApp.m_nClientPort = 8080;
 }
 
 CMainFrame::~CMainFrame()
