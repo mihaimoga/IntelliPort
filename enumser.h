@@ -3,7 +3,7 @@ Module : enumser.h
 Purpose: Defines the interface for a class to enumerate the serial ports installed on a PC
          using a number of different approaches
 
-Copyright (c) 1998 - 2022 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
+Copyright (c) 1998 - 2023 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
 
 All rights reserved.
 
@@ -21,6 +21,10 @@ to maintain a single distribution point for the source code.
 ///////////////////////// Macros / Defines ////////////////////////////////////
 
 #pragma once
+
+#if _MSVC_LANG < 201703
+#error CEnumerateSerial requires a minimum C++ language standard of /std:c++17
+#endif //#if __cplusplus < 201703
 
 #ifndef __ENUMSER_H__
 #define __ENUMSER_H__
@@ -73,7 +77,7 @@ to maintain a single distribution point for the source code.
 class CENUMERATESERIAL_EXT_CLASS CEnumerateSerial
 {
 public:
-	//Typdefs
+	//Typedefs
 	using CPortsArray = std::vector<UINT>;
 #ifdef _UNICODE
 	using String = std::wstring;

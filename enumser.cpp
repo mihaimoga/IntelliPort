@@ -140,7 +140,7 @@ History: PJN / 23-02-1999 Code now uses QueryDosDevice if running on NT to deter
                           2. Updated the code to compile cleanly on VC 2015.
                           3. Reworked CEnumerateSerial::UsingComDB method to statically link to msports.dll.
                           4. Reworked CEnumerateSerial::UsingSetupAPI1 method to statically link to setupapi.dll.
-                          5. Reworked CEnumerateSerial::UsingSetupAPI2 method to statically linke to setupapi.dll.
+                          5. Reworked CEnumerateSerial::UsingSetupAPI2 method to statically link to setupapi.dll.
                           6. Removed now unnecessary CEnumerateSerial::LoadLibraryFromSystem32 method.
                           7. Added SAL annotations to all the code.
                           8. Removed call to VerifyVersionInfo from CEnumerateSerial::UsingQueryDosDevice.
@@ -211,8 +211,11 @@ History: PJN / 23-02-1999 Code now uses QueryDosDevice if running on NT to deter
                           be compiled using /std:c++17.
          PJN / 05-03-2022 1. Updated copyright details.
                           2. Updated the code to use C++ uniform initialization for all variable declarations.
+         PJN / 15-05-2023 1. Updated copyright details
+                          2. Updated modules to indicate that it needs to be compiled using /std:c++17. Thanks to Martin 
+                          Richter for reporting this issue.
 
-Copyright (c) 1998 - 2022 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
+Copyright (c) 1998 - 2023 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
 
 All rights reserved.
 
@@ -222,7 +225,7 @@ You are allowed to include the source code in any product (commercial, shareware
 when your product is released in binary form. You are allowed to modify the source code in any way you want 
 except you cannot modify the copyright details at the top of each module. If you want to distribute source 
 code with your application, then you are only allowed to distribute versions released by the author. This is 
-to maintain a single distribution point for the source code. 
+to maintain a single distribution point for the source code.
 
 */
 
@@ -284,7 +287,7 @@ to maintain a single distribution point for the source code.
 ///////////////////////// Implementation //////////////////////////////////////
 
 #ifndef NO_CENUMERATESERIAL_USING_CREATEFILE
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingCreateFile(_Inout_ CPortsArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingCreateFile(_Inout_ CPortsArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -328,7 +331,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingCreateFile(_I
 
 #if !defined(NO_CENUMERATESERIAL_USING_SETUPAPI1) || !defined(NO_CENUMERATESERIAL_USING_SETUPAPI2)
 #pragma warning(suppress: 26429)
-_Return_type_success_(return != false) bool CEnumerateSerial::RegQueryValueString(_In_ ATL::CRegKey & key, _In_ LPCTSTR lpValueName, _Inout_ String & sValue)
+_Return_type_success_(return != false) bool CEnumerateSerial::RegQueryValueString(_In_ ATL::CRegKey& key, _In_ LPCTSTR lpValueName, _Inout_ String& sValue)
 {
 	//Reset the output parameter
 	sValue.clear();
@@ -379,7 +382,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::RegQueryValueStrin
 	return true;
 }
 
-_Return_type_success_(return != false) bool CEnumerateSerial::QueryRegistryPortName(_In_ ATL::CRegKey & deviceKey, _Out_ int& nPort)
+_Return_type_success_(return != false) bool CEnumerateSerial::QueryRegistryPortName(_In_ ATL::CRegKey& deviceKey, _Out_ int& nPort)
 {
 	//What will be the return value from the method (assume the worst)
 	bool bAdded{ false };
@@ -407,7 +410,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::QueryRegistryPortN
 	return bAdded;
 }
 
-_Return_type_success_(return != false) bool CEnumerateSerial::QueryUsingSetupAPI(_In_ const GUID & guid, _In_ DWORD dwFlags, _Inout_ CPortAndNamesArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::QueryUsingSetupAPI(_In_ const GUID& guid, _In_ DWORD dwFlags, _Inout_ CPortAndNamesArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -467,7 +470,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::QueryUsingSetupAPI
 	return true;
 }
 
-_Return_type_success_(return != false) bool CEnumerateSerial::QueryDeviceDescription(_In_ HDEVINFO hDevInfoSet, _In_ SP_DEVINFO_DATA & devInfo, _Inout_ String & sFriendlyName)
+_Return_type_success_(return != false) bool CEnumerateSerial::QueryDeviceDescription(_In_ HDEVINFO hDevInfoSet, _In_ SP_DEVINFO_DATA& devInfo, _Inout_ String& sFriendlyName)
 {
 	DWORD dwType{ 0 };
 	DWORD dwSize{ 0 };
@@ -539,7 +542,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::IsNumeric(_In_z_ L
 }
 
 #ifndef NO_CENUMERATESERIAL_USING_QUERYDOSDEVICE
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingQueryDosDevice(_Inout_ CPortsArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingQueryDosDevice(_Inout_ CPortsArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -606,7 +609,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingQueryDosDevic
 #endif //#ifndef NO_CENUMERATESERIAL_USING_QUERYDOSDEVICE
 
 #ifndef NO_CENUMERATESERIAL_USING_GETDEFAULTCOMMCONFIG
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingGetDefaultCommConfig(_Inout_ CPortsArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingGetDefaultCommConfig(_Inout_ CPortsArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -632,7 +635,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingGetDefaultCom
 #endif //#ifndef NO_CENUMERATESERIAL_USING_GETDEFAULTCOMMCONFIG
 
 #ifndef NO_CENUMERATESERIAL_USING_SETUPAPI1
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingSetupAPI1(_Inout_ CPortAndNamesArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingSetupAPI1(_Inout_ CPortAndNamesArray& ports)
 {
 	//Delegate the main work of this method to the helper method
 	return QueryUsingSetupAPI(GUID_DEVINTERFACE_COMPORT, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE, ports);
@@ -640,7 +643,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingSetupAPI1(_In
 #endif //#ifndef NO_CENUMERATESERIAL_USING_SETUPAPI1
 
 #ifndef NO_CENUMERATESERIAL_USING_SETUPAPI2
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingSetupAPI2(_Inout_ CPortAndNamesArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingSetupAPI2(_Inout_ CPortAndNamesArray& ports)
 {
 	//Delegate the main work of this method to the helper method
 	return QueryUsingSetupAPI(GUID_DEVINTERFACE_SERENUM_BUS_ENUMERATOR, DIGCF_PRESENT, ports);
@@ -648,7 +651,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingSetupAPI2(_In
 #endif //#ifndef NO_CENUMERATESERIAL_USING_SETUPAPI2
 
 #ifndef NO_CENUMERATESERIAL_USING_ENUMPORTS
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingEnumPorts(_Inout_ CPortAndNamesArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingEnumPorts(_Inout_ CPortAndNamesArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -703,7 +706,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingEnumPorts(_In
 #endif //#ifndef NO_CENUMERATESERIAL_USING_ENUMPORTS
 
 #ifndef NO_CENUMERATESERIAL_USING_WMI
-HRESULT CEnumerateSerial::UsingWMI(_Inout_ CPortAndNamesArray & ports)
+HRESULT CEnumerateSerial::UsingWMI(_Inout_ CPortAndNamesArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -786,7 +789,7 @@ HRESULT CEnumerateSerial::UsingWMI(_Inout_ CPortAndNamesArray & ports)
 #endif //#ifndef NO_CENUMERATESERIAL_USING_WMI
 
 #ifndef NO_CENUMERATESERIAL_USING_COMDB
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingComDB(_Inout_ CPortsArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingComDB(_Inout_ CPortsArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -838,7 +841,7 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingComDB(_Inout_
 #endif //#ifndef NO_CENUMERATESERIAL_USING_COMDB
 
 #ifndef NO_CENUMERATESERIAL_USING_REGISTRY
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingRegistry(_Inout_ CNamesArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingRegistry(_Inout_ CNamesArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
@@ -893,12 +896,12 @@ _Return_type_success_(return != false) bool CEnumerateSerial::UsingRegistry(_Ino
 #endif //#ifndef NO_CENUMERATESERIAL_USING_REGISTRY
 
 #ifndef NO_CENUMERATESERIAL_USING_GETCOMMPORTS
-_Return_type_success_(return != false) bool CEnumerateSerial::UsingGetCommPorts(_Inout_ CPortsArray & ports)
+_Return_type_success_(return != false) bool CEnumerateSerial::UsingGetCommPorts(_Inout_ CPortsArray& ports)
 {
 	//Reset the output parameter
 	ports.clear();
 
-	using LPGETCOMMPORTS = ULONG(__stdcall*)(PULONG, ULONG, PULONG);
+	using LPGETCOMMPORTS = ULONG(__stdcall *)(PULONG, ULONG, PULONG);
 	HMODULE hDLL{ LoadLibrary(_T("api-ms-win-core-comm-l1-1-0.dll")) };
 	if (hDLL == nullptr)
 		return false;
