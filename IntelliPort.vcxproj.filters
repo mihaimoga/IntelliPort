@@ -348,9 +348,6 @@
     <ClInclude Include="IntelliPortView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HyperlinkStatic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VersionInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -382,6 +379,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IncomingDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HLinkCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -420,6 +420,9 @@
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IncomingDlg.cpp">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HLinkCtrl.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
