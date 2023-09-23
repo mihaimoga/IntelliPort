@@ -401,9 +401,6 @@
     <ClCompile Include="IntelliPortView.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HyperlinkStatic.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VersionInfo.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
