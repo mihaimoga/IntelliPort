@@ -462,7 +462,9 @@ echo.
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="IntelliPort.reg" />
+    <None Include="LICENSE" />
     <None Include="ReadMe.txt" />
+    <None Include="ReleaseNotes.html" />
     <None Include="res\1403987236_socket.png" />
     <None Include="res\buttons.bmp" />
     <None Include="res\filelarge.bmp" />
@@ -487,6 +489,7 @@ echo.
     <None Include="res\writelarge.png" />
     <None Include="res\writesmall.bmp" />
     <None Include="res\writesmall.png" />
+    <None Include="SoftwareContextRegister.html" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoHandle.h" />

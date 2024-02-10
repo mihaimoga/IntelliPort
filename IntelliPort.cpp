@@ -15,8 +15,6 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 //
 
 #include "stdafx.h"
-#include "afxwinappex.h"
-#include "afxdialogex.h"
 #include "IntelliPort.h"
 #include "MainFrame.h"
 #include "IntelliPortDoc.h"
@@ -150,6 +148,9 @@ BOOL CIntelliPortApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+	// m_pMainWnd->MoveWindow(CRect(0, 0, 800, 600));
+	// m_pMainWnd->CenterWindow();
+
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
 	// Enable drag/drop open

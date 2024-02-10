@@ -328,6 +328,9 @@
     <None Include="res\mfcribbon-ms00007.mfcribbon-ms">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="LICENSE" />
+    <None Include="ReleaseNotes.html" />
+    <None Include="SoftwareContextRegister.html" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IntelliPort.h">
