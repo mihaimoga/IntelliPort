@@ -122,7 +122,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.AddElement(new CMFCRibbonStatusBarPane(
 		ID_STATUSBAR_PANE1, strTitlePane, TRUE, NULL,
 		_T("012345678901234567890123456789012345678901234567890123456789")), strTitlePane);
-	strTitlePane.LoadString(IDS_LOG_HISTORY_CLEARED);
+	VERIFY(strTitlePane.LoadString(IDS_LOG_HISTORY_CLEARED));
 	SetStatusBarText(strTitlePane);
 
 	// Create a caption bar:
@@ -197,8 +197,9 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 		{
 			m_pRingBuffer.ReadBinary(pBuffer, nLength);
 			pBuffer[nLength] = '\0';
-			CStringA strText(pBuffer);
-			AddText(CString(strText));
+			const std::string strRawText(pBuffer);
+			CString strBuffer(utf8_to_wstring(strRawText).c_str());
+			AddText(strBuffer);
 		}
 		m_pMutualAccess.unlock();
 	}
@@ -351,7 +352,7 @@ void CMainFrame::OnOpenSerialPort()
 				{
 					m_nThreadRunning = true;
 					m_hSerialPortThread = CreateThread(nullptr, 0, SerialPortThreadFunc, this, 0, &m_nSerialPortThreadID);
-					strFormat.LoadString(IDS_SERIAL_PORT_OPENED);
+					VERIFY(strFormat.LoadString(IDS_SERIAL_PORT_OPENED));
 					strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
 					SetCaptionBarText(strMessage);
 				}
@@ -398,7 +399,7 @@ void CMainFrame::OnOpenSerialPort()
 				{
 					m_nThreadRunning = true;
 					m_hSocketThread = CreateThread(nullptr, 0, SocketThreadFunc, this, 0, &m_nSocketTreadID);
-					strFormat.LoadString(IDS_SOCKET_CREATED);
+					VERIFY(strFormat.LoadString(IDS_SOCKET_CREATED));
 					strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
 					SetCaptionBarText(strMessage);
 				}
@@ -458,7 +459,7 @@ void CMainFrame::OnCloseSerialPort()
 			{
 				if (!m_pSerialPort.IsOpen())
 				{
-					strFormat.LoadString(IDS_SERIAL_PORT_CLOSED);
+					VERIFY(strFormat.LoadString(IDS_SERIAL_PORT_CLOSED));
 					strMessage.Format(strFormat, static_cast<LPCWSTR>(theApp.m_strSerialName));
 					SetCaptionBarText(strMessage);
 				}
@@ -489,7 +490,7 @@ void CMainFrame::OnCloseSerialPort()
 						nServerPort = nClientPort;
 					}
 
-					strFormat.LoadString(IDS_SOCKET_CLOSED);
+					VERIFY(strFormat.LoadString(IDS_SOCKET_CLOSED));
 					strMessage.Format(strFormat, ((theApp.m_nConnection == 1) ? _T("TCP") : _T("UDP")), static_cast<LPCWSTR>(strServerIP), nServerPort);
 					SetCaptionBarText(strMessage);
 				}
@@ -526,7 +527,10 @@ void CMainFrame::OnSendReceive()
 		CInputDlg dlgInput(this);
 		if (dlgInput.DoModal() == IDOK)
 		{
-			CStringA pBuffer(dlgInput.m_strSendData);
+			const std::wstring strRawText(dlgInput.m_strSendData);
+			// convert Unicode characters to UTF8
+			CStringA pBuffer(wstring_to_utf8(strRawText).c_str());
+
 			const int nLength = pBuffer.GetLength();
 
 			switch (theApp.m_nConnection)

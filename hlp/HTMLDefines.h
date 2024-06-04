@@ -29,6 +29,7 @@
 #define HIDP_OLE_INIT_FAILED                    0x30064
 #define HIDP_SOCKETS_INIT_FAILED                0x30068
 #define HIDP_OLE_INIT_FAILED2                   0x3006D
+#define HIDP_FAIL_SCINTILLA_DOCUMENT_TOO_LARGE  0x30139
  
 // Resources (IDR_*) 
 #define HIDR_HELP_MENU                          0x20076

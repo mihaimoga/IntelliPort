@@ -30,6 +30,8 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 
 #include "targetver.h"
 
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
 
 // turns off MFC's hiding of some common and often safely ignored warning messages
@@ -71,14 +73,18 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 
 #define CWSOCKET_MFC_EXTENSIONS
 
-#include <atlsync.h>
-#include <atlstr.h>
-
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <atlsync.h>
 #include <vector>
 #include <array>
+#include <map>
+#include <codecvt>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
 #include <msports.h>
 
 #define NO_CENUMERATESERIAL_USING_SETUPAPI1

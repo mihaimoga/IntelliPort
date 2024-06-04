@@ -77,12 +77,7 @@ BOOL CIntelliPortDoc::OnNewDocument()
 	// (SDI documents will reuse this document)
 	reinterpret_cast<CEditView*>(m_viewList.GetHead())->GetEditCtrl().SetFont(&m_fontTerminal);
 	reinterpret_cast<CEditView*>(m_viewList.GetHead())->GetEditCtrl().SetReadOnly(TRUE);
-	//const UINT Before = reinterpret_cast<CEditView*>(m_viewList.GetHead())->GetEditCtrl().GetLimitText();
 	reinterpret_cast<CEditView*>(m_viewList.GetHead())->GetEditCtrl().SetLimitText(0);
-	//const UINT After = reinterpret_cast<CEditView*>(m_viewList.GetHead())->GetEditCtrl().GetLimitText();
-	//TCHAR buffer[0x100] = { 0, };
-	//_stprintf(buffer, _T("Before = %u, After = %u"), Before, After);
-	//MessageBox(NULL, buffer, _T("IntelliPort"), MB_OK);
 
 	return TRUE;
 }
@@ -98,21 +93,28 @@ void CIntelliPortDoc::Serialize(CArchive& ar)
 		CEditView* pEditView = reinterpret_cast<CEditView*>(m_viewList.GetHead());
 		if (ar.IsLoading())
 		{
-			CStringA pInput;
+			CStringA strInput;
+			// read file's content & read its content
 			UINT nLength = (UINT) ar.GetFile()->GetLength();
-			ar.GetFile()->Read(pInput.GetBufferSetLength(nLength), nLength);
-			pInput.ReleaseBuffer();
-			CStringW pBuffer(pInput);
-			pEditView->GetEditCtrl().SetWindowText(pBuffer);
+			ar.GetFile()->Read(strInput.GetBufferSetLength(nLength), nLength);
+			strInput.ReleaseBuffer();
+			// convert UTF8 to Unicode characters
+			const std::string strRawText(strInput);
+			CStringW strBuffer(utf8_to_wstring(strRawText).c_str());
+			// set window's content with what have been read from file
+			pEditView->GetEditCtrl().SetWindowText(strBuffer);
 		}
 		else
 		{
-			CStringW pBuffer;
-			pEditView->GetEditCtrl().GetWindowText(pBuffer);
-			CStringA pOutput(pBuffer);
-			UINT nLength = pOutput.GetLength();
-			ar.GetFile()->Write(pOutput.GetBuffer(nLength), nLength);
-			pOutput.ReleaseBuffer();
+			CStringW strBuffer;
+			pEditView->GetEditCtrl().GetWindowText(strBuffer);
+			const std::wstring strRawText(strBuffer);
+			// convert Unicode characters to UTF8
+			CStringA strOutput(wstring_to_utf8(strRawText).c_str());
+			UINT nLength = strOutput.GetLength();
+			// write to file the window's content
+			ar.GetFile()->Write(strOutput.GetBuffer(nLength), nLength);
+			strOutput.ReleaseBuffer();
 		}
 		pEditView->GetEditCtrl().SetModify(FALSE);
 	}
@@ -120,7 +122,7 @@ void CIntelliPortDoc::Serialize(CArchive& ar)
 	CString strFormat, strMessage;
 	CMainFrame* pMainFrame = (CMainFrame*) AfxGetMainWnd();
 	ASSERT_VALID(pMainFrame);
-	strFormat.LoadString(ar.IsLoading() ? IDS_FILE_HAS_BEEN_LOADED : IDS_FILE_HAS_BEEN_SAVED);
+	VERIFY(strFormat.LoadString(ar.IsLoading() ? IDS_FILE_HAS_BEEN_LOADED : IDS_FILE_HAS_BEEN_SAVED));
 	strMessage.Format(strFormat, static_cast<LPCWSTR>(ar.m_strFileName));
 	pMainFrame->SetStatusBarText(strMessage);
 

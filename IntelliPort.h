@@ -22,6 +22,9 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 
 #include "resource.h"       // main symbols
 
+std::wstring utf8_to_wstring(const std::string& str);
+std::string wstring_to_utf8(const std::wstring& str);
+
 // CIntelliPortApp:
 // See IntelliPort.cpp for the implementation of this class
 //
