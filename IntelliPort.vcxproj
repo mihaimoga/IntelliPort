@@ -463,6 +463,7 @@ echo.
     <None Include="hlp\scrollbars.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="IntelliPort.html" />
     <None Include="IntelliPort.reg" />
     <None Include="LICENSE" />
     <None Include="README.md" />
@@ -613,6 +614,9 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "hlp\HTMLDefines.
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="IntelliPort.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="IntelliPort.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

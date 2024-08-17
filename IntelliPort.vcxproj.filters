@@ -334,6 +334,7 @@
     <None Include="CODE_OF_CONDUCT.md" />
     <None Include="CONTRIBUTING.md" />
     <None Include="README.md" />
+    <None Include="IntelliPort.html" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IntelliPort.h">
@@ -441,5 +442,8 @@
     <CustomBuild Include="Resource.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="IntelliPort.png" />
   </ItemGroup>
 </Project>
