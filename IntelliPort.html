@@ -11,7 +11,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="https://www.moga.doctor/#intellifile-top" target="_blank">IntelliPort</a>
+                <a class="navbar-brand" href="https://www.moga.doctor/#intelliport-top" target="_blank">IntelliPort</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -62,6 +62,38 @@
                     <p>For all the portable editions, everything (the application, settings, and plugins) is stored in one folder hierarchy. And by default, the portable editions do not mess with operating system settings (so no file associations or Edit with <em>IntelliPort</em> context-menu entries) – if you want such with a portable edition, you will have to set it up manually.</p>
                     <p>The portable zip edition contain all the themes, user defined languages, auto-completions, localizations, and default plugins and Plugins Admin tool that come with the installed version of <em>IntelliPort</em>.</p>
                     <p>The portable zip edition of <em>IntelliPort</em> can be removed by deleting the directory they came in. If you manually set up file associations or context-menu entries in the OS, it is your responsibility to remove them yourself.</p>
+
+                    <h2>Working with Files</h2>
+                    <p>A &ldquo;file&rdquo; is the basic unit of what is edited in <em>IntelliPort</em>, but that term actually covers multiple related concepts. Primarily, the &ldquo;file&rdquo; is the series of bytes stored on a disk or other storage medium and accessed through your computer&rsquo;s filesystem; and pedantically, if the document you are editing has never been saved to the filesystem, it&rsquo;s not technically a file, though common usage applies that term to unsaved documents as well. The &ldquo;document&rdquo; refers to the text being edited, whether it&rsquo;s a new, unsaved document, or whether it&rsquo;s a document that&rsquo;s been previously saved as a file on the filesystem. And finally, in <em>IntelliPort</em>, each document is presented in a Tab in one of the two Views of the <em>IntelliPort</em> user interface, which are the graphical containers which <em>IntelliPort</em> uses to manipulate files and other documents, though many users think of the user interface element as the &ldquo;file&rdquo; as well.</p>
+                    <p>The <strong>main button</strong> contains many of the normal file-operation actions found in most applications. <em>IntelliPort</em> also includes other custom actions which are useful to understand.</p>
+                    <ul>
+                        <li><strong>New</strong>: Creates a new document, and displays that empty document in a Tab in the active View.</li>
+                        <li><strong>Open</strong>: Opens an existing file from the filesystem, and displays that document in a Tab in the active View.</li>
+                        <li><strong>Save</strong>: Saves the current document to the filesystem using the same filename.<br>If the document does not currently have a file associated with it, this action will be grayed out and the menu entry cannot be used. Use <strong>Save As</strong> instead.</li>
+                        <li><strong>Save As</strong>: Saves the current document to the filesystem, prompting for the new filename to use.<br>If the document had previously been saved to a file, this will create as new copy of the file, and <em>IntelliPort</em> will continue working with the document associated with the new file, leaving the old file with the contents that were last saved.</li>
+                        <li><strong>Close</strong>: Closes the active document, prompting to save if it has been modified since it was opened or created.</li>
+                        <li>The <strong>Print</strong> action will pull up a Windows-standard print dialog, from which you can choose your printer and send your text to the selected printer. <br>Normally, it will print the whole document, but you can use the print dialog to choose only certain pages; if you have an active selection in the editor, only the selected text will be printed.</li>
+                        <li><strong>Exit</strong>: Closes the <em>IntelliPort</em> application.</li>
+                    </ul>
+                    <p>The <strong>Clipboard</strong> menu features typical editing commands which any Windows user should be familiar with:</p>
+                    <ul>
+                        <li><strong>Cut</strong>: will remove any selected text from the document and place it on the Windows clipboard.</li>
+                        <li><strong>Copy</strong>: will put a copy of any selected text on the Windows clipboard; document content is unaltered.</li>
+                        <li><strong>Paste</strong>: if the Windows clipboard contains text, this will insert a copy of that text at the point of the caret; if text is selected when this command is executed, the selected text will be replaced by the text from the clipboard; if the clipboard does not contain text, nothing will happen.</li>
+                        <li><strong>Delete</strong>: will remove any selected text from the document.</li>
+                        <li><strong>Select All</strong>: selects all text in the document into a stream selection.</li>
+                    </ul>
+                     <figure class="text-center">
+                        <img class="img-thumbnail" src="IntelliPort-Configure.png" alt="Configure dialog">
+                        <figcaption>Configure serial port and TCP/UDP socket dialog</figcaption>
+                    </figure>
+                    <p>The <strong>HyperTerminal</strong> menu features the application's most important functions:</p>
+                    <ul>
+                        <li><strong>Configure</strong>: allows either serial port or TCP/UDP socket configuration for <em>IntelliPort</em>.</li>
+                        <li><strong>Connect</strong>: creates the remote connection using the current configuration.</li>
+                        <li><strong>Disconnect</strong>: closes the remote connection.</li>
+                        <li><strong>Send Text</strong>: sends text to remote connection.</li>
+                    </ul>
 
                     <h2>Create and Submit your Pull Request</h2>
                     <p>As noted in the <a href="https://github.com/mihaimoga/IntelliPort/blob/main/CONTRIBUTING.md" target="_blank">Contributing Rules</a> for <em>IntelliPort</em>, all Pull Requests need to be attached to a issue on GitHub. So the first step is to create an issue which requests that the functionality be improved (if it was already there) or added (if it was not yet there); in your issue, be sure to explain that you have the functionality definition ready, and will be submitting a Pull Request. The second step is to use the GitHub interface to create the Pull Request from your fork into the main repository. The final step is to wait for and respond to feedback from the developers as needed, until such time as your PR is accepted or rejected.</p>

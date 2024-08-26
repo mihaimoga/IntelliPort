@@ -445,5 +445,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="IntelliPort.png" />
+    <Image Include="IntelliPort-Configure.png" />
   </ItemGroup>
 </Project>

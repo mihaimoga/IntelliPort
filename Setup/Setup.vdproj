@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_120C7D7FCAD64690BEB4930C1ADBBEAA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1C81E2A87F104ABB9C8BD50D9809FB49"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -208,6 +214,26 @@
             {
             "SourcePath" = "8:..\\IntelliPort.png"
             "TargetName" = "8:IntelliPort.png"
+            "Tag" = "8:"
+            "Folder" = "8:_ED01DC3038FB4823A2F44925C3BB3DB8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_120C7D7FCAD64690BEB4930C1ADBBEAA"
+            {
+            "SourcePath" = "8:..\\IntelliPort-Configure.png"
+            "TargetName" = "8:IntelliPort-Configure.png"
             "Tag" = "8:"
             "Folder" = "8:_ED01DC3038FB4823A2F44925C3BB3DB8"
             "Condition" = "8:"
