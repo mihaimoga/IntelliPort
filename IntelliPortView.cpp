@@ -1,5 +1,6 @@
 /* Copyright (C) 2014-2024 Stefan-Mihai MOGA
 This file is part of IntelliPort application developed by Stefan-Mihai MOGA.
+IntelliPort is an alternative Windows version to the famous HyperTerminal!
 
 IntelliPort is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the Open
