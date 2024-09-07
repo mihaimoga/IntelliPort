@@ -68,3 +68,15 @@ The **HyperTerminal** menu features the application's most important functions:
 ## Create and Submit your Pull Request
 
 As noted in the [Contributing Rules](https://github.com/mihaimoga/IntelliPort/blob/main/CONTRIBUTING.md) for _IntelliPort_, all Pull Requests need to be attached to a issue on GitHub. So the first step is to create an issue which requests that the functionality be improved (if it was already there) or added (if it was not yet there); in your issue, be sure to explain that you have the functionality definition ready, and will be submitting a Pull Request. The second step is to use the GitHub interface to create the Pull Request from your fork into the main repository. The final step is to wait for and respond to feedback from the developers as needed, until such time as your PR is accepted or rejected.
+
+## Acknowledges
+
+This open source project uses the following libraries:
+
+- [genUp4win](https://github.com/mihaimoga/genUp4win)
+- PJ Naughter's [CEnumerateSerial](https://www.naughter.com/enumser.html)
+- PJ Naughter's [CHLinkCtrl](https://www.naughter.com/hlinkctrl.html)
+- Larry Antram's [CRingBuffer](https://www.codeproject.com/Articles/2269/Fast-Ring-Buffer-for-Incoming-Winsock-Textual-Data)
+- PJ Naughter's [CSerialPort2](https://www.naughter.com/serialport.html)
+- PJ Naughter's [CVersionInfo](https://www.naughter.com/versioninfo.html)
+- PJ Naughter's [CWSocket](https://www.naughter.com/w3mfc.html)
