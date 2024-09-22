@@ -56,8 +56,6 @@ The **Clipboard** menu features typical editing commands which any Windows user 
 
 ![Configure dialog](IntelliPort-Configure.png)
 
-Configure serial port and TCP/UDP socket dialog
-
 The **HyperTerminal** menu features the application's most important functions:
 
 - **Configure**: allows either serial port or TCP/UDP socket configuration for _IntelliPort_.

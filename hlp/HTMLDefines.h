@@ -47,6 +47,8 @@
 #define HIDD_CONFIGUREDLG                       0x20137
 #define HIDD_INPUTDLG                           0x20138
 #define HIDD_INCOMINGDLG                        0x20139
+#define HIDD_WebBrowserDlg                      0x2013A
+#define HIDD_CheckForUpdatesDlg                 0x2013B
  
 // Frame Controls (IDW_*) 
 // This is a part of the Microsoft Foundation Classes C++ library.

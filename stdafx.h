@@ -91,3 +91,7 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 #define NO_CENUMERATESERIAL_USING_SETUPAPI1
 #define NO_CENUMERATESERIAL_USING_SETUPAPI2
 #define NO_CENUMERATESERIAL_USING_REGISTRY
+
+#define INSTALLER_URL _T("https://www.moga.doctor/freeware/IntelliPortSetup.msi")
+#define APPLICATION_URL _T("https://www.moga.doctor/freeware/IntelliPort.xml")
+#define USER_MANUAL_URL _T("https://www.moga.doctor/freeware/IntelliPort.html")
