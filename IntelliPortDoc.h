@@ -20,6 +20,16 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 
 class CIntelliPortDoc : public CDocument
 {
+	//Enums
+	enum class BOM
+	{
+		Unknown,
+		UTF8,
+		UTF16BE,
+		UTF16LE,
+		UTF16LE_NOBOM
+	};
+
 protected: // create from serialization only
 	CIntelliPortDoc();
 	DECLARE_DYNCREATE(CIntelliPortDoc)
@@ -27,6 +37,7 @@ protected: // create from serialization only
 // Attributes
 public:
 	CFont m_fontTerminal;
+	BOM m_BOM; //The BOM which applies to this view
 
 // Operations
 public:
@@ -34,6 +45,7 @@ public:
 // Overrides
 public:
 	virtual BOOL OnNewDocument();
+	bool AddText(CString strText);
 	virtual void Serialize(CArchive& ar);
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();

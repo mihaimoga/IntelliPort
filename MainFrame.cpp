@@ -250,10 +250,6 @@ bool CMainFrame::HideMessageBar()
 	return true;
 }
 
-#define CRLF _T("\r\n")
-#define CR _T("\r")
-#define LF _T("\n")
-
 bool CMainFrame::AddText(CString strText)
 {
 	strText.Replace(CRLF, LF);
@@ -265,7 +261,7 @@ bool CMainFrame::AddText(CString strText)
 	pEdit.ReplaceSel(strText, TRUE);
 	pEdit.SetSel(-1, 0);
 
-	return false;
+	return true;
 }
 
 // CMainFrame diagnostics
