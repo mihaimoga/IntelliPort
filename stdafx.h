@@ -27,11 +27,7 @@ IntelliPort. If not, see <http://www.opensource.org/licenses/gpl-3.0.html>*/
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
 #endif
 
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-
 #include "targetver.h"
-
-#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
 
