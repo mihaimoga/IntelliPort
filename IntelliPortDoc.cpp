@@ -100,6 +100,7 @@ END_MESSAGE_MAP()
 
 CIntelliPortDoc::CIntelliPortDoc()
 {
+	m_BOM = BOM::Unknown;
 	VERIFY(m_fontTerminal.CreateFont(
 		-MulDiv(10, GetDeviceCaps(::GetDC(nullptr), LOGPIXELSY), 72), // nHeight
 		0,                         // nWidth

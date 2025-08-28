@@ -79,6 +79,9 @@ CMainFrame::CMainFrame()
 	m_nThreadRunning = false;
 	m_hSerialPortThread = nullptr;
 	m_hSocketThread = nullptr;
+	m_nSerialPortThreadID = 0;
+	m_nSocketTreadID = 0;
+	m_nTimerID = 0;
 
 	theApp.m_nBaudRate = -1;
 	theApp.m_nDataBits = -1;
@@ -195,7 +198,7 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 			HideMessageBar();
 		}
 
-		char pBuffer[0x10000] = { 0, };
+		char pBuffer[0x1000] = { 0, };
 		m_pMutualAccess.lock();
 		const int nLength = m_pRingBuffer.GetMaxReadSize();
 		if (nLength > 0)
@@ -523,25 +526,39 @@ void CMainFrame::OnCloseSerialPort()
 
 void CMainFrame::OnSendReceive()
 {
-	try
+	int nLength = 0;
+	CInputDlg dlgInput(this);
+	if (dlgInput.DoModal() == IDOK)
 	{
-		CInputDlg dlgInput(this);
-		if (dlgInput.DoModal() == IDOK)
+		const std::wstring strRawText(dlgInput.m_strSendData);
+		// convert Unicode characters to UTF8
+		CStringA pBuffer(wstring_to_utf8(strRawText).c_str());
+		nLength = pBuffer.GetLength();
+		if (nLength > 0)
 		{
-			const std::wstring strRawText(dlgInput.m_strSendData);
-			// convert Unicode characters to UTF8
-			CStringA pBuffer(wstring_to_utf8(strRawText).c_str());
-
-			const int nLength = pBuffer.GetLength();
-
 			switch (theApp.m_nConnection)
 			{
 				case 0:
 				{
 					m_pMutualAccess.lock();
-					m_pSerialPort.Write(pBuffer.GetBufferSetLength(nLength), nLength);
+					try
+					{
+						m_pSerialPort.Write(pBuffer.GetBuffer(nLength), nLength);
+						pBuffer.ReleaseBuffer();
+					}
+					catch (CSerialException& pException)
+					{
+						const int nErrorLength = 0x100;
+						TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+						pException.GetErrorMessage2(lpszErrorMessage, nErrorLength);
+						TRACE(_T("%s\n"), lpszErrorMessage);
+						// pException->Delete();
+						SetCaptionBarText(lpszErrorMessage);
+						m_nThreadRunning = false;
+						MessageBeep(MB_ICONERROR);
+					}
 					m_pMutualAccess.unlock();
-					pBuffer.ReleaseBuffer();
+					MessageBeep(MB_OK);
 					break;
 				}
 				case 1:
@@ -557,9 +574,24 @@ void CMainFrame::OnSendReceive()
 							if (m_pSocket.IsWritable(1000))
 							{
 								m_pMutualAccess.lock();
-								m_pSocket.Send(pBuffer.GetBufferSetLength(nLength), nLength, 0);
-								pBuffer.ReleaseBuffer();
+								try
+								{
+									m_pSocket.Send(pBuffer.GetBuffer(nLength), nLength, 0);
+									pBuffer.ReleaseBuffer();
+								}
+								catch (CWSocketException* pException)
+								{
+									const int nErrorLength = 0x100;
+									TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+									pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
+									TRACE(_T("%s\n"), lpszErrorMessage);
+									pException->Delete();
+									SetCaptionBarText(lpszErrorMessage);
+									m_nThreadRunning = false;
+									MessageBeep(MB_ICONERROR);
+								}
 								m_pMutualAccess.unlock();
+								MessageBeep(MB_OK);
 							}
 						}
 						else
@@ -567,9 +599,24 @@ void CMainFrame::OnSendReceive()
 							if (m_pIncomming.IsWritable(1000))
 							{
 								m_pMutualAccess.lock();
-								m_pIncomming.Send(pBuffer.GetBufferSetLength(nLength), nLength, 0);
-								pBuffer.ReleaseBuffer();
+								try
+								{
+									m_pIncomming.Send(pBuffer.GetBuffer(nLength), nLength, 0);
+									pBuffer.ReleaseBuffer();
+								}
+								catch (CWSocketException* pException)
+								{
+									const int nErrorLength = 0x100;
+									TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+									pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
+									TRACE(_T("%s\n"), lpszErrorMessage);
+									pException->Delete();
+									SetCaptionBarText(lpszErrorMessage);
+									m_nThreadRunning = false;
+									MessageBeep(MB_ICONERROR);
+								}
 								m_pMutualAccess.unlock();
+								MessageBeep(MB_OK);
 							}
 						}
 					}
@@ -578,35 +625,30 @@ void CMainFrame::OnSendReceive()
 						if (m_pSocket.IsWritable(1000))
 						{
 							m_pMutualAccess.lock();
-							m_pSocket.SendTo(pBuffer.GetBufferSetLength(nLength), nLength, nServerPort, strServerIP, 0);
-							pBuffer.ReleaseBuffer();
+							try
+							{
+								m_pSocket.SendTo(pBuffer.GetBuffer(nLength), nLength, nServerPort, strServerIP, 0);
+								pBuffer.ReleaseBuffer();
+							}
+							catch (CWSocketException* pException)
+							{
+								const int nErrorLength = 0x100;
+								TCHAR lpszErrorMessage[nErrorLength] = { 0, };
+								pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
+								TRACE(_T("%s\n"), lpszErrorMessage);
+								pException->Delete();
+								SetCaptionBarText(lpszErrorMessage);
+								m_nThreadRunning = false;
+								MessageBeep(MB_ICONERROR);
+							}
 							m_pMutualAccess.unlock();
+							MessageBeep(MB_OK);
 						}
 					}
 					break;
 				}
 			}
 		}
-	}
-	catch (CSerialException& pException)
-	{
-		const int nErrorLength = 0x100;
-		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
-		pException.GetErrorMessage2(lpszErrorMessage, nErrorLength);
-		TRACE(_T("%s\n"), lpszErrorMessage);
-		// pException->Delete();
-		SetCaptionBarText(lpszErrorMessage);
-		m_nThreadRunning = false;
-	}
-	catch (CWSocketException* pException)
-	{
-		const int nErrorLength = 0x100;
-		TCHAR lpszErrorMessage[nErrorLength] = { 0, };
-		pException->GetErrorMessage(lpszErrorMessage, nErrorLength);
-		TRACE(_T("%s\n"), lpszErrorMessage);
-		pException->Delete();
-		SetCaptionBarText(lpszErrorMessage);
-		m_nThreadRunning = false;
 	}
 }
 
@@ -632,8 +674,9 @@ void CMainFrame::OnUpdateSendReceive(CCmdUI* pCmdUI)
 
 DWORD WINAPI SerialPortThreadFunc(LPVOID pParam)
 {
+	int nLength = 0;
 	COMSTAT status = { 0, };
-	char pBuffer[0x10000] = { 0, };
+	char pBuffer[0x1000] = { 0, };
 	CMainFrame* pMainFrame = (CMainFrame*) pParam;
 	CRingBuffer& pRingBuffer = pMainFrame->m_pRingBuffer;
 	CSerialPort& pSerialPort = pMainFrame->m_pSerialPort;
@@ -648,14 +691,7 @@ DWORD WINAPI SerialPortThreadFunc(LPVOID pParam)
 			if (status.cbInQue > 0)
 			{
 				memset(pBuffer, 0, sizeof(pBuffer));
-				const int nLength = pSerialPort.Read(pBuffer, sizeof(pBuffer));
-				pMutualAccess.lock();
-				pRingBuffer.WriteBinary(pBuffer, nLength);
-				pMutualAccess.unlock();
-			}
-			else
-			{
-				::Sleep(10);
+				nLength = pSerialPort.Read(pBuffer, sizeof(pBuffer));
 			}
 		}
 		catch (CSerialException& pException)
@@ -666,7 +702,15 @@ DWORD WINAPI SerialPortThreadFunc(LPVOID pParam)
 			TRACE(_T("%s\n"), lpszErrorMessage);
 			// pException->Delete();
 			pMainFrame->SetCaptionBarText(lpszErrorMessage);
+			MessageBeep(MB_ICONERROR);
 			break;
+		}
+		if (nLength > 0)
+		{
+			pMutualAccess.lock();
+			pRingBuffer.WriteBinary(pBuffer, nLength);
+			pMutualAccess.unlock();
+			nLength = 0;
 		}
 	}
 	pSerialPort.Close();
@@ -677,7 +721,8 @@ DWORD WINAPI SerialPortThreadFunc(LPVOID pParam)
 
 DWORD WINAPI SocketThreadFunc(LPVOID pParam)
 {
-	char pBuffer[0x10000] = { 0, };
+	int nLength = 0;
+	char pBuffer[0x1000] = { 0, };
 	CMainFrame* pMainFrame = (CMainFrame*) pParam;
 	CRingBuffer& pRingBuffer = pMainFrame->m_pRingBuffer;
 	CWSocket& pSocket = pMainFrame->m_pSocket;
@@ -700,14 +745,7 @@ DWORD WINAPI SocketThreadFunc(LPVOID pParam)
 					if (pSocket.IsReadible(1000))
 					{
 						memset(pBuffer, 0, sizeof(pBuffer));
-						const int nLength = pSocket.Receive(pBuffer, sizeof(pBuffer), 0);
-						pMutualAccess.lock();
-						pRingBuffer.WriteBinary(pBuffer, nLength);
-						pMutualAccess.unlock();
-					}
-					else
-					{
-						::Sleep(10);
+						nLength = pSocket.Receive(pBuffer, sizeof(pBuffer), 0);
 					}
 				}
 				else
@@ -715,14 +753,7 @@ DWORD WINAPI SocketThreadFunc(LPVOID pParam)
 					if (pIncomming.IsReadible(1000))
 					{
 						memset(pBuffer, 0, sizeof(pBuffer));
-						const int nLength = pIncomming.Receive(pBuffer, sizeof(pBuffer), 0);
-						pMutualAccess.lock();
-						pRingBuffer.WriteBinary(pBuffer, nLength);
-						pMutualAccess.unlock();
-					}
-					else
-					{
-						::Sleep(10);
+						nLength = pIncomming.Receive(pBuffer, sizeof(pBuffer), 0);
 					}
 				}
 			}
@@ -731,14 +762,7 @@ DWORD WINAPI SocketThreadFunc(LPVOID pParam)
 				if (pSocket.IsReadible(1000))
 				{
 					memset(pBuffer, 0, sizeof(pBuffer));
-					const int nLength = pSocket.ReceiveFrom(pBuffer, sizeof(pBuffer), strServerIP, nServerPort, 0);
-					pMutualAccess.lock();
-					pRingBuffer.WriteBinary(pBuffer, nLength);
-					pMutualAccess.unlock();
-				}
-				else
-				{
-					::Sleep(10);
+					nLength = pSocket.ReceiveFrom(pBuffer, sizeof(pBuffer), strServerIP, nServerPort, 0);
 				}
 			}
 		}
@@ -750,7 +774,15 @@ DWORD WINAPI SocketThreadFunc(LPVOID pParam)
 			TRACE(_T("%s\n"), lpszErrorMessage);
 			pException->Delete();
 			pMainFrame->SetCaptionBarText(lpszErrorMessage);
+			MessageBeep(MB_ICONERROR);
 			break;
+		}
+		if (nLength > 0)
+		{
+			pMutualAccess.lock();
+			pRingBuffer.WriteBinary(pBuffer, nLength);
+			pMutualAccess.unlock();
+			nLength = 0;
 		}
 	}
 	pIncomming.Close();

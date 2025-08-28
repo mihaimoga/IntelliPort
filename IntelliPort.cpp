@@ -95,7 +95,16 @@ CIntelliPortApp::CIntelliPortApp()
 	SetAppID(_T("IntelliPort.AppID.NoVersion"));
 
 	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
+	m_nConnection = 0;
+	m_nBaudRate = 0;
+	m_nDataBits = 0;
+	m_nParity = 0;
+	m_nStopBits = 0;
+	m_nFlowControl = 0;
+	m_nSocketType = 0;
+	m_nServerPort = 0;
+	m_nClientPort = 0;
+	m_nAppLook = 0;
 }
 
 // The one and only CIntelliPortApp object
