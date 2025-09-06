@@ -85,7 +85,7 @@ BOOL CConfigureDlg::OnInitDialog()
 	if (CEnumerateSerial::UsingGetCommPorts(m_arrSerialPortNames))
 	{
 		m_pSerialPortNames.ResetContent();
-		for (int nIndex = 0; nIndex < m_arrSerialPortNames.size(); nIndex++)
+		for (int nIndex = 0; nIndex < (int)m_arrSerialPortNames.size(); nIndex++)
 		{
 			strSerialPortName.Format(_T("COM%u"), m_arrSerialPortNames[nIndex]);
 			m_pSerialPortNames.AddString(strSerialPortName);
@@ -93,7 +93,7 @@ BOOL CConfigureDlg::OnInitDialog()
 		bool bFound = false;
 		if (!theApp.m_strSerialName.IsEmpty())
 		{
-			for (int nIndex = 0; nIndex < m_arrSerialPortNames.size(); nIndex++)
+			for (int nIndex = 0; nIndex < (int)m_arrSerialPortNames.size(); nIndex++)
 			{
 				m_pSerialPortNames.GetLBText(nIndex, nItemText);
 				if (theApp.m_strSerialName.Compare(nItemText) == 0)
@@ -326,7 +326,7 @@ BOOL CConfigureDlg::OnInitDialog()
 		}
 		default:
 			m_pFlowControl.SetCurSel(0);
-	}
+		}
 
 	m_pSocketType.ResetContent();
 	m_pSocketType.AddString(_T("Server"));
@@ -344,10 +344,10 @@ BOOL CConfigureDlg::OnInitDialog()
 	const int nServer1 = strServerIP.Find(_T('.'), 0);
 	const int nServer2 = strServerIP.Find(_T('.'), nServer1 + 1);
 	const int nServer3 = strServerIP.Find(_T('.'), nServer2 + 1);
-	m_pServerIP.SetAddress((BYTE) _tstoi(strServerIP.Mid(0, nServer1)),
-		(BYTE) _tstoi(strServerIP.Mid(nServer1 + 1, nServer2 - nServer1)),
-		(BYTE) _tstoi(strServerIP.Mid(nServer2 + 1, nServer3 - nServer2)),
-		(BYTE) _tstoi(strServerIP.Mid(nServer3 + 1, strServerIP.GetLength() - nServer3)));
+	m_pServerIP.SetAddress((BYTE)_tstoi(strServerIP.Mid(0, nServer1)),
+		(BYTE)_tstoi(strServerIP.Mid(nServer1 + 1, nServer2 - nServer1)),
+		(BYTE)_tstoi(strServerIP.Mid(nServer2 + 1, nServer3 - nServer2)),
+		(BYTE)_tstoi(strServerIP.Mid(nServer3 + 1, strServerIP.GetLength() - nServer3)));
 
 	CString strServerPort;
 	strServerPort.Format(_T("%d"), theApp.m_nServerPort);
@@ -358,10 +358,10 @@ BOOL CConfigureDlg::OnInitDialog()
 	const int nClient1 = strClientIP.Find(_T('.'), 0);
 	const int nClient2 = strClientIP.Find(_T('.'), nClient1 + 1);
 	const int nClient3 = strClientIP.Find(_T('.'), nClient2 + 1);
-	m_pClientIP.SetAddress((BYTE) _tstoi(strClientIP.Mid(0, nClient1)),
-		(BYTE) _tstoi(strClientIP.Mid(nClient1 + 1, nClient2 - nClient1)),
-		(BYTE) _tstoi(strClientIP.Mid(nClient2 + 1, nClient3 - nClient2)),
-		(BYTE) _tstoi(strClientIP.Mid(nClient3 + 1, strClientIP.GetLength() - nClient3)));
+	m_pClientIP.SetAddress((BYTE)_tstoi(strClientIP.Mid(0, nClient1)),
+		(BYTE)_tstoi(strClientIP.Mid(nClient1 + 1, nClient2 - nClient1)),
+		(BYTE)_tstoi(strClientIP.Mid(nClient2 + 1, nClient3 - nClient2)),
+		(BYTE)_tstoi(strClientIP.Mid(nClient3 + 1, strClientIP.GetLength() - nClient3)));
 
 	CString strClientPort;
 	strClientPort.Format(_T("%d"), theApp.m_nClientPort);
