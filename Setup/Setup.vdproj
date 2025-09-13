@@ -159,7 +159,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E6A3368E7A8840CF9ED9F8E93EE48850"
+        "MsmKey" = "8:_E7E5074F34144201911BC6624D9EAB6C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -708,10 +708,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E6A3368E7A8840CF9ED9F8E93EE48850"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E7E5074F34144201911BC6624D9EAB6C"
             {
-            "SourcePath" = "8:..\\SoftwareContextRegister.html"
-            "TargetName" = "8:SoftwareContextRegister.html"
+            "SourcePath" = "8:..\\SoftwareContentRegister.html"
+            "TargetName" = "8:SoftwareContentRegister.html"
             "Tag" = "8:"
             "Folder" = "8:_ED01DC3038FB4823A2F44925C3BB3DB8"
             "Condition" = "8:"

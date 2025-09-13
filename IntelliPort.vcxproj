@@ -504,7 +504,7 @@ echo.
     <None Include="res\writelarge.png" />
     <None Include="res\writesmall.bmp" />
     <None Include="res\writesmall.png" />
-    <None Include="SoftwareContextRegister.html" />
+    <None Include="SoftwareContentRegister.html" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoHandle.h" />
