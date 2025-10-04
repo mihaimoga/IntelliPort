@@ -74,7 +74,7 @@ This open source project uses the following libraries:
 - [genUp4win](https://github.com/mihaimoga/genUp4win)
 - PJ Naughter's [CEnumerateSerial](https://www.naughter.com/enumser.html)
 - PJ Naughter's [CHLinkCtrl](https://www.naughter.com/hlinkctrl.html)
-- Larry Antram's [CRingBuffer](https://www.codeproject.com/Articles/2269/Fast-Ring-Buffer-for-Incoming-Winsock-Textual-Data)
+- Larry Antram's [CRingBuffer](https://www.codeproject.com/articles/Fast-Ring-Buffer-for-Incoming-Winsock-Textual-Data)
 - PJ Naughter's [CSerialPort2](https://www.naughter.com/serialport.html)
 - PJ Naughter's [CVersionInfo](https://www.naughter.com/versioninfo.html)
 - PJ Naughter's [CWSocket](https://www.naughter.com/w3mfc.html)
