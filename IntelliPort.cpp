@@ -195,7 +195,7 @@ BOOL CIntelliPortApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
-	// m_pMainWnd->MoveWindow(CRect(0, 0, 814, 607));
+	// m_pMainWnd->MoveWindow(CRect(0, 0, 1214, 907));
 	// m_pMainWnd->CenterWindow();
 
 	// call DragAcceptFiles only if there's a suffix
