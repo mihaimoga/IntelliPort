@@ -71,7 +71,7 @@ As noted in the [Contributing Rules](https://github.com/mihaimoga/IntelliPort/bl
 
 This open source project uses the following libraries:
 
-- [genUp4win](https://github.com/mihaimoga/genUp4win)
+- Stefan-Mihai MOGA's [genUp4win](https://github.com/mihaimoga/genUp4win)
 - PJ Naughter's [CEnumerateSerial](https://www.naughter.com/enumser.html)
 - PJ Naughter's [CHLinkCtrl](https://www.naughter.com/hlinkctrl.html)
 - Larry Antram's [CRingBuffer](https://www.codeproject.com/articles/Fast-Ring-Buffer-for-Incoming-Winsock-Textual-Data)
