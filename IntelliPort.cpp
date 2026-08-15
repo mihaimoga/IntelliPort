@@ -417,6 +417,8 @@ BOOL CAboutDlg::OnInitDialog()
 		const int nFirst = strVersion.Find(_T('.'));
 		const int nSecond = strVersion.Find(_T('.'), nFirst + 1);
 		strVersion.Truncate(nSecond);
+		if (nSecond == (nFirst + 2))
+			strVersion.Insert(nFirst + 1, _T("0"));
 
 		// Display version with platform architecture (32-bit or 64-bit)
 #if _WIN32 || _WIN64
