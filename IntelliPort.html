@@ -94,6 +94,43 @@
 						<li><strong>Send Text</strong>: sends text to remote connection.</li>
 					</ul>
 
+					<h2 id="roadmap">Roadmap</h2>
+					<p>This roadmap outlines where <em>IntelliPort</em> is heading. It brings together planned improvements, ideas for features that are not available yet, and the maintenance work that goes into every release. Items are grouped by horizon rather than by date, and their order may change as feedback arrives or as the libraries <em>IntelliPort</em> builds on evolve, so please treat it as a statement of intent, not a promise. For everything that has already shipped, see the <a href="ReleaseNotes.html">Release Notes</a>.</p>
+					<p class="text-body-secondary"><small>Last reviewed: November 2026 (version 1.47 in development).</small></p>
+
+					<h3>Now <small class="text-body-secondary fw-normal">in progress and ongoing</small></h3>
+					<ul>
+						<li><strong>Up-to-date components</strong>: each release picks up the latest Microsoft Edge WebView2 (embedded browser) and genUp4win (automatic updates). Version 1.47, now in development, continues this work and also keeps the <strong>Check for Updates</strong> dialog open when no new version is found; the application exits only after it launches an installer.</li>
+						<li><strong>Stability, security and performance</strong>: bug fixes, security updates and performance tuning continue alongside new features, so that <em>IntelliPort</em> stays fast and small.</li>
+					</ul>
+
+					<h3>Next <small class="text-body-secondary fw-normal">planned, next in line</small></h3>
+					<ul>
+						<li><strong>Remember settings between sessions</strong>: the serial port or TCP/UDP socket settings chosen in <strong>Configure</strong> are kept only while <em>IntelliPort</em> is running, and every new start falls back to the defaults (no serial port configured, sockets set to 127.0.0.1 on port 8080). Saving them would let you reconnect in a couple of clicks.</li>
+						<li><strong>Lower CPU use on serial ports</strong>: the serial reader checks the port status in a continuous loop. Waiting for communication events instead would let it sleep until data arrives, in line with the goal of using as little CPU power as possible.</li>
+						<li><strong>Responsive TCP server mode</strong>: in TCP server mode <em>IntelliPort</em> waits for a client inside a blocking call, so the window does not respond, and the wait cannot be cancelled, until a client connects. Moving the wait to a background thread would keep the interface responsive and let you cancel it.</li>
+						<li><strong>Logging options</strong>: optional timestamps for received data, and a log that is written to a file as data arrives, so that long captures do not depend on saving by hand. Today the log lives in the window and is saved manually with <strong>Save As</strong>.</li>
+					</ul>
+
+					<h3>Later <small class="text-body-secondary fw-normal">planned, larger efforts</small></h3>
+					<ul>
+						<li><strong>Terminal options</strong>: choose the font and its size for the log (it is fixed to Consolas 10 pt today), and keep the choice together with the other saved settings.</li>
+						<li><strong>Richer sending</strong>: a history of recently sent texts, a choice of line ending (none, CR, LF or CRLF) and sending the contents of a file, building on <strong>Send Text</strong>, which sends one text at a time today.</li>
+						<li><strong>Automatic reconnect</strong>: reopen the connection after a USB serial adapter is unplugged and plugged back in, or after a network connection drops. Today a lost connection has to be opened again by hand with <strong>Connect</strong>.</li>
+					</ul>
+
+					<h3>Under consideration <small class="text-body-secondary fw-normal">ideas, not yet committed</small></h3>
+					<ul>
+						<li><strong>Hex view and binary data</strong>: show received bytes in hexadecimal next to their text and send raw bytes. Today everything received is displayed as UTF-8 text and everything sent is UTF-8 text.</li>
+						<li><strong>Serial control lines</strong>: show and toggle the DTR and RTS lines and show the state of CTS and DSR. Today they are only driven indirectly by the flow control choice in <strong>Configure</strong>.</li>
+						<li><strong>Native ARM64 and high-DPI support</strong>: a native ARM64 build for Windows on Arm devices (<em>IntelliPort</em> is currently built for x86 and x64) and Per-Monitor V2 DPI awareness for a sharper interface on high-DPI and mixed-DPI displays.</li>
+						<li><strong>More interface languages</strong>: the interface already comes in Romanian, Russian, German, English, French, Italian, Spanish and Greek. Translations into other languages, for example Turkish, Chinese or Czech (which the genUp4win updater already supports), are welcome as pull requests.</li>
+						<li><strong>Automated builds</strong>: a GitHub Actions workflow that builds the Win32 and x64 configurations for every pull request, so that contributions get quick feedback.</li>
+					</ul>
+
+					<h3>Help shape the roadmap</h3>
+					<p>Want to see something sooner, or have an idea that is not listed here? <a href="https://github.com/mihaimoga/IntelliPort/issues" target="_blank">Open an issue</a> or start a conversation in <a href="https://github.com/mihaimoga/IntelliPort/discussions" target="_blank">Discussions</a>. Contributions are welcome as well: any item above can be picked up through a pull request, as described in the next section. For enhancements, the issue must be approved by a project administrator (it will carry the <code>Accepted</code> label) before the pull request can be merged, so it is best to open the issue before you start coding.</p>
+
 					<h2>Create and Submit your Pull Request</h2>
 					<p>As noted in the <a href="https://github.com/mihaimoga/IntelliPort/blob/main/CONTRIBUTING.md" target="_blank">Contributing Rules</a> for <em>IntelliPort</em>, all Pull Requests need to be attached to a issue on GitHub. So the first step is to create an issue which requests that the functionality be improved (if it was already there) or added (if it was not yet there); in your issue, be sure to explain that you have the functionality definition ready, and will be submitting a Pull Request. The second step is to use the GitHub interface to create the Pull Request from your fork into the main repository. The final step is to wait for and respond to feedback from the developers as needed, until such time as your PR is accepted or rejected.</p>
 				</div>

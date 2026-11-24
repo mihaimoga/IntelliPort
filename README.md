@@ -63,6 +63,42 @@ The **HyperTerminal** menu features the application's most important functions:
 - **Disconnect**: closes the remote connection.
 - **Send Text**: sends text to remote connection.
 
+## Roadmap
+
+This roadmap outlines where _IntelliPort_ is heading. It brings together planned improvements, ideas for features that are not available yet, and the maintenance work that goes into every release. Items are grouped by horizon rather than by date, and their order may change as feedback arrives or as the libraries _IntelliPort_ builds on evolve, so please treat it as a statement of intent, not a promise. For everything that has already shipped, see the [Release Notes](https://github.com/mihaimoga/IntelliPort/releases).
+
+_Last reviewed: November 2026 (version 1.47 in development)._
+
+### Now (in progress and ongoing)
+
+- **Up-to-date components**: each release picks up the latest Microsoft Edge WebView2 (embedded browser) and genUp4win (automatic updates). Version 1.47, now in development, continues this work and also keeps the **Check for Updates** dialog open when no new version is found; the application exits only after it launches an installer.
+- **Stability, security and performance**: bug fixes, security updates and performance tuning continue alongside new features, so that _IntelliPort_ stays fast and small.
+
+### Next (planned, next in line)
+
+- **Remember settings between sessions**: the serial port or TCP/UDP socket settings chosen in **Configure** are kept only while _IntelliPort_ is running, and every new start falls back to the defaults (no serial port configured, sockets set to 127.0.0.1 on port 8080). Saving them would let you reconnect in a couple of clicks.
+- **Lower CPU use on serial ports**: the serial reader checks the port status in a continuous loop. Waiting for communication events instead would let it sleep until data arrives, in line with the goal of using as little CPU power as possible.
+- **Responsive TCP server mode**: in TCP server mode _IntelliPort_ waits for a client inside a blocking call, so the window does not respond, and the wait cannot be cancelled, until a client connects. Moving the wait to a background thread would keep the interface responsive and let you cancel it.
+- **Logging options**: optional timestamps for received data, and a log that is written to a file as data arrives, so that long captures do not depend on saving by hand. Today the log lives in the window and is saved manually with **Save As**.
+
+### Later (planned, larger efforts)
+
+- **Terminal options**: choose the font and its size for the log (it is fixed to Consolas 10 pt today), and keep the choice together with the other saved settings.
+- **Richer sending**: a history of recently sent texts, a choice of line ending (none, CR, LF or CRLF) and sending the contents of a file, building on **Send Text**, which sends one text at a time today.
+- **Automatic reconnect**: reopen the connection after a USB serial adapter is unplugged and plugged back in, or after a network connection drops. Today a lost connection has to be opened again by hand with **Connect**.
+
+### Under consideration (ideas, not yet committed)
+
+- **Hex view and binary data**: show received bytes in hexadecimal next to their text and send raw bytes. Today everything received is displayed as UTF-8 text and everything sent is UTF-8 text.
+- **Serial control lines**: show and toggle the DTR and RTS lines and show the state of CTS and DSR. Today they are only driven indirectly by the flow control choice in **Configure**.
+- **Native ARM64 and high-DPI support**: a native ARM64 build for Windows on Arm devices (_IntelliPort_ is currently built for x86 and x64) and Per-Monitor V2 DPI awareness for a sharper interface on high-DPI and mixed-DPI displays.
+- **More interface languages**: the interface already comes in Romanian, Russian, German, English, French, Italian, Spanish and Greek. Translations into other languages, for example Turkish, Chinese or Czech (which the genUp4win updater already supports), are welcome as pull requests.
+- **Automated builds**: a GitHub Actions workflow that builds the Win32 and x64 configurations for every pull request, so that contributions get quick feedback.
+
+### Help shape the roadmap
+
+Want to see something sooner, or have an idea that is not listed here? [Open an issue](https://github.com/mihaimoga/IntelliPort/issues) or start a conversation in [Discussions](https://github.com/mihaimoga/IntelliPort/discussions). Contributions are welcome as well: any item above can be picked up through a pull request, as described in the next section. For enhancements, the issue must be approved by a project administrator (it will carry the `Accepted` label) before the pull request can be merged, so it is best to open the issue before you start coding.
+
 ## Create and Submit your Pull Request
 
 As noted in the [Contributing Rules](https://github.com/mihaimoga/IntelliPort/blob/main/CONTRIBUTING.md) for _IntelliPort_, all Pull Requests need to be attached to a issue on GitHub. So the first step is to create an issue which requests that the functionality be improved (if it was already there) or added (if it was not yet there); in your issue, be sure to explain that you have the functionality definition ready, and will be submitting a Pull Request. The second step is to use the GitHub interface to create the Pull Request from your fork into the main repository. The final step is to wait for and respond to feedback from the developers as needed, until such time as your PR is accepted or rejected.
